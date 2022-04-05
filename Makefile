@@ -53,7 +53,7 @@ $(NAME): ${OBJS_PATH} ${OBJS}
 	@${CC} ${CFLAGS} -o $@ ${OBJS}
 
 ${OBJS_PATH}:
-	mkdir -p $@
+	@mkdir -p $@
 
 ${OBJS_PATH}%.o: ${SRCS_PATH}%.cpp
 	@${CC} ${CFLAGS} -c $< -o $@

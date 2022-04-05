@@ -14,46 +14,98 @@ std::vector<int> parse_line(char *line) {
 }
 
 static bool parse_file(const std::string &filename, PuzzleMap * const map) {
-  std::ifstream f;
-  std::string line;
-  std::vector<int> tmp;
-  char *token_line;
+	std::ifstream f;
+	std::string line;
+	std::vector<int> tmp;
+	char *token_line;
 	char *token_token;
-  int type = ARG_NONE;
+	int type = ARG_NONE;
 
-  f.open(filename);
-  if (!f.is_open())
-    ft_exit("Cannot read file " + filename);
-  while (std::getline(f, line))
+	f.open(filename);
+	if (!f.is_open())
+		ft_exit("Cannot read file " + filename);
+	while (std::getline(f, line))
 	{
-    if (line[0] != '#')
+		if (line[0] != '#')
 		{
-      token_line = strtok(&line[0], "#");
-      if (!(type & ARG_SIZE))
+			token_line = strtok(&line[0], "#");
+			if (!(type & ARG_SIZE))
 			{
-        token_token = strtok(token_line, " ");
-        type |= ARG_SIZE;
-      }
-      else
+				token_token = strtok(token_line, " ");
+				type |= ARG_SIZE;
+			}
+			else
 				tmp = parse_line(token_line);
-      (*map).map.push_back(tmp);
-      tmp.clear();
-    }
+			(*map).map.push_back(tmp);
+			tmp.clear();
+		}
 	}
 	display_map(map);
-  f.close();
+	f.close();
 	return true;
 }
 
-static bool parse_args(int argc, char **argv, PuzzleMap *const map) {
-	(void)argc; (void)argv; (void)map;
+bool parse_size(const std::string &str, PuzzleMap *const map) {
+	(void)str; (void)map;
+	std::cout << "Call size with " << str << std::endl;
+	return true;
+}
+
+bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
+	(void)str; (void)map;
+	std::cout << "Call heuristic with " << str << std::endl;
+	return true;
+}
+
+bool hasIncompatibleFlags(int flag) {
+	if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_SIZE))
+		return true;
+	return false;
+}
+
+bool parse_args(int argc, char **argv, PuzzleMap *const map) {
+	std::vector<FlagExec> exec = std::vector<FlagExec>();
+	std::vector<FlagExec>::iterator it, ite;
+	int flag = 0;
+
+	exec.push_back({ ARG_PATH, "--file=", parse_file });
+	exec.push_back({ ARG_SIZE, "--size=", parse_size });
+	exec.push_back({ ARG_H, "--heuristic=", parse_heuristic });
+	ite = exec.end();
+
+	// Check flags validity
+	for (int i = 1; i < argc; i++) {
+		const std::string str = argv[i];
+
+		for (it = exec.begin(); it != ite; it++) {
+			if (!starts_with(str, it->start))
+				continue;
+			else if (isFlagSet(flag, it->type))
+				ft_exit(std::string("Duplicate flag ") + it->start);
+			else {
+				flag = setFlag(flag, it->type);
+				if (hasIncompatibleFlags(flag))
+					ft_exit("Incompatible flags", true);
+				break ;
+			}
+		}
+		if (it == ite)
+			ft_exit("Unknown flag", true);
+	}
+
+	// Execute flags functions
+	for (int i = 1; i < argc; i++) {
+		const std::string str = argv[i];
+
+		for (it = exec.begin(); it != ite; it++)
+			if (starts_with(str, it->start))
+				it->fct(str.substr(it->start.length()), map);
+	}
 	return true;
 }
 
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
-	parse_args(argc, argv, map);
-
-	parse_file("map/comment.txt", map);
-
+	if (!parse_args(argc, argv, map))
+		return false;
 	return true;
 }
