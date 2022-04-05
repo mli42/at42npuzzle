@@ -4,10 +4,13 @@
 # include <iostream>
 # include <vector>
 
+typedef typename std::vector<int> MapLine;
+typedef typename std::vector<MapLine> MapData;
+
 class PuzzleMap {
 	public:
 	int size;
-	std::vector<std::vector<int>> map;
+	MapData map;
 
 	PuzzleMap(void) : size(0), map() {};
 	~PuzzleMap() {};
