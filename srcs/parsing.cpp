@@ -29,10 +29,10 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
     if (line[0] != '#')
 		{
       token_line = strtok(&line[0], "#");
-      if (!(type & ARG_SIZE))
+      if (!isFlagSet(type, ARG_SIZE))
 			{
         token_token = strtok(token_line, " ");
-        type |= ARG_SIZE;
+        type = setFlag(type, ARG_SIZE);
       }
       else
 				tmp = parse_line(token_line);
@@ -40,7 +40,7 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
       tmp.clear();
     }
 	}
-	display_map(map);
+	display_map((*map).map);
   f.close();
 	return true;
 }
@@ -52,6 +52,8 @@ static bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
 	parse_args(argc, argv, map);
+	map_generation();
+	return true;
 
 	parse_file("map/comment.txt", map);
 

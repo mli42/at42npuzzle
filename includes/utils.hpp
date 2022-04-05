@@ -7,8 +7,9 @@
 
 void	ft_exit(const std::string &msg);
 bool starts_with(const std::string &str, const std::string &target);
-void	display_map(PuzzleMap const * map);
+void	display_map(MapData map);
 
+MapData map_generation(void);
 
 bool isFlagSet(const int num, const int &bit);
 int setFlag(const int num, const int bit);
