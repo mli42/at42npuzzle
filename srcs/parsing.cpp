@@ -29,10 +29,10 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 		if (line[0] != '#')
 		{
 			token_line = strtok(&line[0], "#");
-			if (!(type & ARG_SIZE))
+			if (!isFlagSet(type, ARG_SIZE))
 			{
 				token_token = strtok(token_line, " ");
-				type |= ARG_SIZE;
+				type = setFlag(type, ARG_SIZE);
 			}
 			else
 				tmp = parse_line(token_line);
@@ -40,7 +40,7 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 			tmp.clear();
 		}
 	}
-	display_map(map);
+	display_map_data((*map).map); // Pour debug
 	f.close();
 	return true;
 }
