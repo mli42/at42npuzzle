@@ -14,34 +14,34 @@ std::vector<int> parse_line(char *line) {
 }
 
 static bool parse_file(const std::string &filename, PuzzleMap * const map) {
-  std::ifstream f;
-  std::string line;
-  std::vector<int> tmp;
-  char *token_line;
+	std::ifstream f;
+	std::string line;
+	std::vector<int> tmp;
+	char *token_line;
 	char *token_token;
-  int type = ARG_NONE;
+	int type = ARG_NONE;
 
-  f.open(filename);
-  if (!f.is_open())
-    ft_exit("Cannot read file " + filename);
-  while (std::getline(f, line))
+	f.open(filename);
+	if (!f.is_open())
+		ft_exit("Cannot read file " + filename);
+	while (std::getline(f, line))
 	{
-    if (line[0] != '#')
+		if (line[0] != '#')
 		{
-      token_line = strtok(&line[0], "#");
-      if (!isFlagSet(type, ARG_SIZE))
+			token_line = strtok(&line[0], "#");
+			if (!isFlagSet(type, ARG_SIZE))
 			{
-        token_token = strtok(token_line, " ");
-        type = setFlag(type, ARG_SIZE);
-      }
-      else
+				token_token = strtok(token_line, " ");
+				type = setFlag(type, ARG_SIZE);
+			}
+			else
 				tmp = parse_line(token_line);
-      (*map).map.push_back(tmp);
-      tmp.clear();
-    }
+			(*map).map.push_back(tmp);
+			tmp.clear();
+		}
 	}
-	display_map((*map).map);
-  f.close();
+	display_map_data((*map).map); // Pour debug
+	f.close();
 	return true;
 }
 
@@ -52,7 +52,7 @@ static bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
 	parse_args(argc, argv, map);
-	map_generation();
+	map_line_generation();
 	return true;
 
 	parse_file("map/comment.txt", map);
