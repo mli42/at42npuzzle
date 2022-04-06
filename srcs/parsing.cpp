@@ -2,6 +2,26 @@
 #include "../includes/utils.hpp"
 #include "../includes/parsing.hpp"
 
+bool parse_map(MapData map)
+{
+	int size = 3; // a enlever quand on aura une variable globale
+	std::map<int, int> mapCheck;
+	auto ite = mapCheck.end();
+
+	for (int i = 0; i < size * size; i++)
+		mapCheck.insert({i, 0});
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			mapCheck[map[i][j]] += 1;
+
+	for (auto it = mapCheck.begin(); it != ite; ++it)
+		if (it->second != 1)
+			return false;
+
+	return true;
+}
+
 std::vector<int> parse_line(char *line) {
 	std::vector<int> split_line;
 	char *token_token;
@@ -32,16 +52,31 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 			if (!isFlagSet(type, ARG_SIZE))
 			{
 				token_token = strtok(token_line, " ");
+				map->size = atoi(token_token);
+				if (map->size < 3)
+				{
+					f.close();
+					return false;
+				}
 				type = setFlag(type, ARG_SIZE);
 			}
 			else
+			{
 				tmp = parse_line(token_line);
-			(*map).map.push_back(tmp);
-			tmp.clear();
+				if (tmp.size() != map->size)
+				{
+					f.close();
+					return false;
+				}
+				map->map.push_back(tmp);
+				tmp.clear();
+			}
 		}
 	}
-	display_map_data((*map).map); // Pour debug
 	f.close();
+	if (map->map.size() != map->size)
+		return false;
+	display_map_data(map->map); // Pour debug
 	return true;
 }
 
@@ -99,7 +134,8 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 
 		for (it = exec.begin(); it != ite; it++)
 			if (starts_with(str, it->start))
-				it->fct(str.substr(it->start.length()), map);
+				if (!it->fct(str.substr(it->start.length()), map))
+					return false;
 	}
 	return true;
 }
@@ -107,5 +143,6 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
 	if (!parse_args(argc, argv, map))
 		return false;
+	std::cout << parse_map(map->map) << std::endl;
 	return true;
 }
