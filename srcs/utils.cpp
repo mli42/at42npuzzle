@@ -21,7 +21,7 @@ bool starts_with(const std::string &str, const std::string &target) {
 	return substr == target;
 }
 
-int isFlagSet(int num, int bit) {
+bool isFlagSet(int num, int bit) {
 	return (num & bit);
 }
 
