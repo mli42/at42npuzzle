@@ -45,17 +45,67 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 	return true;
 }
 
-static bool parse_args(int argc, char **argv, PuzzleMap *const map) {
-	(void)argc; (void)argv; (void)map;
+bool parse_size(const std::string &str, PuzzleMap *const map) {
+	(void)str; (void)map;
+	std::cout << "Call size with " << str << std::endl;
+	return true;
+}
+
+bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
+	(void)str; (void)map;
+	std::cout << "Call heuristic with " << str << std::endl;
+	return true;
+}
+
+bool hasIncompatibleFlags(int flag) {
+	if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_SIZE))
+		return true;
+	return false;
+}
+
+bool parse_args(int argc, char **argv, PuzzleMap *const map) {
+	std::vector<FlagExec> exec = std::vector<FlagExec>();
+	std::vector<FlagExec>::iterator it, ite;
+	int flag = 0;
+
+	exec.push_back({ ARG_PATH, "--file=", parse_file });
+	exec.push_back({ ARG_SIZE, "--size=", parse_size });
+	exec.push_back({ ARG_H, "--heuristic=", parse_heuristic });
+	ite = exec.end();
+
+	// Check flags validity
+	for (int i = 1; i < argc; i++) {
+		const std::string str = argv[i];
+
+		for (it = exec.begin(); it != ite; it++) {
+			if (!starts_with(str, it->start))
+				continue;
+			else if (isFlagSet(flag, it->type))
+				ft_exit(std::string("Duplicate flag ") + it->start);
+			else {
+				flag = setFlag(flag, it->type);
+				if (hasIncompatibleFlags(flag))
+					ft_exit("Incompatible flags", true);
+				break ;
+			}
+		}
+		if (it == ite)
+			ft_exit("Unknown flag", true);
+	}
+
+	// Execute flags functions
+	for (int i = 1; i < argc; i++) {
+		const std::string str = argv[i];
+
+		for (it = exec.begin(); it != ite; it++)
+			if (starts_with(str, it->start))
+				it->fct(str.substr(it->start.length()), map);
+	}
 	return true;
 }
 
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
-	parse_args(argc, argv, map);
-	map_line_generation();
-	return true;
-
-	parse_file("map/comment.txt", map);
-
+	if (!parse_args(argc, argv, map))
+		return false;
 	return true;
 }
