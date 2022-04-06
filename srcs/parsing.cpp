@@ -1,6 +1,7 @@
 #include "../includes/PuzzleMap.hpp"
 #include "../includes/utils.hpp"
 #include "../includes/parsing.hpp"
+#include <regex>
 
 bool parse_map(MapData map)
 {
@@ -52,8 +53,7 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 			if (!isFlagSet(type, ARG_SIZE))
 			{
 				token_token = strtok(token_line, " ");
-				map->size = atoi(token_token);
-				if (map->size < 3)
+				if (parse_size(token_token, map) == false)
 				{
 					f.close();
 					return false;
@@ -80,13 +80,18 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 	return true;
 }
 
-bool parse_size(const std::string &str, PuzzleMap *const map) {
-	(void)str; (void)map;
-	std::cout << "Call size with " << str << std::endl;
+static bool parse_size(const std::string &str, PuzzleMap *const map) {
+	const int isNum = std::regex_match(str, std::regex("\\d+"));
+
+	if (isNum == false) return false;
+	const int size = atoi(str.c_str());
+	if (isMapRightSize(size) == false) return false;
+
+	map->size = size;
 	return true;
 }
 
-bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
+static bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
 	(void)str; (void)map;
 	std::cout << "Call heuristic with " << str << std::endl;
 	return true;

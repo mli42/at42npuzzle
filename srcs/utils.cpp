@@ -40,3 +40,8 @@ void	display_map_line(MapLine const map)
 		std::cout << map[i] << "\t";
 	std::cout << "\n";
 }
+
+bool	isMapRightSize(int size) {
+	if (size < 3 || size > 17) return false;
+	return true;
+}
