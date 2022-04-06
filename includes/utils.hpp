@@ -18,4 +18,6 @@ MapLine map_line_generation(void);
 bool	isFlagSet(const int num, const int bit);
 int		setFlag(const int num, const int bit);
 
+bool	isMapRightSize(int size);
+
 #endif // UTILS_HPP
