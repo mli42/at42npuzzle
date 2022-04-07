@@ -1,5 +1,7 @@
 #include "../includes/main.hpp"
 
+std::map<int, Coord> SolutionCoords;
+
 int main(int argc, char **argv) {
 	PuzzleMap map;
 

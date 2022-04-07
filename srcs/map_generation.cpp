@@ -10,31 +10,41 @@ MapData map_data_generation(void)
 	int right = size - 1;
 	int index = 0;
 	MapData mat = MapData(size, MapLine(size));
+	extern std::map<int, Coord>	SolutionCoords;
 
 	while (1) {
 		if (left > right)
 				break;
-		for (int i = left; i <= right; i++)
-				mat[top][i] = index++;
+		for (int i = left; i <= right; i++) {
+			mat[top][i] = index++;
+			SolutionCoords.insert({mat[top][i], Coord(top, i)});
+		}
 		top++;
 		if (top > bottom)
 				break;
-		for (int i = top; i <= bottom; i++)
-				mat[i][right] = index++;
+		for (int i = top; i <= bottom; i++) {
+			mat[i][right] = index++;
+			SolutionCoords.insert({mat[i][right], Coord(i, right)});
+		}
 		right--;
 		if (left > right)
 				break;
-		for (int i = right; i >= left; i--)
-				mat[bottom][i] = index++;
+		for (int i = right; i >= left; i--) {
+			mat[bottom][i] = index++;
+			SolutionCoords.insert({mat[bottom][i], Coord(bottom, i)});
+		}
 		bottom--;
 		if (top > bottom)
 				break;
-		for (int i = bottom; i >= top; i--)
-				mat[i][left] = index++;
+		for (int i = bottom; i >= top; i--) {
+			mat[i][left] = index++;
+			SolutionCoords.insert({mat[i][left], Coord(i, left)});
+		}
 		left++;
 	}
 
 	display_map_data(mat); // pour debug
+	display_solution_coord();
 	return mat;
 }
 

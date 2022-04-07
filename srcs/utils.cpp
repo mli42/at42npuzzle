@@ -41,6 +41,22 @@ void	display_map_line(MapLine const map)
 	std::cout << "\n";
 }
 
+void display_solution_coord()
+{
+	extern std::map<int, Coord>	SolutionCoords;
+	std::map<int, Coord>::iterator it = SolutionCoords.begin();
+	std::map<int, Coord>::iterator ite = SolutionCoords.end();
+
+	std::cout << SolutionCoords.size() << std::endl;
+
+	while (it != ite)
+	{
+		std::cout << it->first << " (" << it->second.first;
+		std::cout << " " << it->second.second << ")" << std::endl;
+		it++;
+	}
+}
+
 bool	isMapRightSize(int size) {
 	if (size < 3 || size > 17) return false;
 	return true;
