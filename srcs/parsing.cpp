@@ -1,6 +1,7 @@
 #include "../includes/PuzzleMap.hpp"
 #include "../includes/utils.hpp"
 #include "../includes/parsing.hpp"
+#include "../includes/Errno.hpp"
 #include <regex>
 
 bool parse_map(MapData map)
@@ -130,7 +131,7 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 			}
 		}
 		if (it == ite)
-			ft_exit("Unknown flag", true);
+			return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'");
 	}
 
 	// Execute flags functions

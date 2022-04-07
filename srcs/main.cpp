@@ -1,10 +1,13 @@
 #include "../includes/main.hpp"
+#include "../includes/Errno.hpp"
 
 int main(int argc, char **argv) {
 	PuzzleMap map;
 
-	if (parsing(argc, argv, &map) == false)
-		return 1;
+	parsing(argc, argv, &map);
 
-	return 0;
+	if (Errno::hasErr())
+		Errno::show();
+
+	return Errno::hasErr();
 }

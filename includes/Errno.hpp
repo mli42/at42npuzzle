@@ -9,6 +9,7 @@ class Errno {
 	enum nperrno {
 		NP_NO_ERR = 0,
 		NP_DUPLICATE_ARG,
+		NP_UNKNOWN_ARG,
 	};
 
 	typedef std::map<Errno::nperrno, std::string> meaning_map;
@@ -18,9 +19,11 @@ class Errno {
 	static nperrno err;
 	static std::string detail;
 
-	static void setError(Errno::nperrno error, std::string detail = "") {
+	// Returns true if there is no error
+	static bool setError(Errno::nperrno error = Errno::NP_NO_ERR, std::string detail = "") {
 		Errno::err = error;
 		Errno::detail = detail;
+		return error == Errno::NP_NO_ERR;
 	};
 
 	static void show() {
@@ -28,6 +31,10 @@ class Errno {
 		if (!Errno::detail.empty())
 			std::cerr << ": " << Errno::detail;
 		std::cerr << std::endl;
+	};
+
+	static bool hasErr() {
+		return Errno::err != Errno::NP_NO_ERR;
 	};
 };
 
