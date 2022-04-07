@@ -5,8 +5,9 @@
 # include <vector>
 # include <map>
 
-typedef typename std::vector<int> MapLine;
-typedef typename std::vector<MapLine> MapData;
+typedef std::vector<int> MapLine;
+typedef std::vector<MapLine> MapData;
+typedef std::pair<int, int> Coord;
 
 class PuzzleMap {
 	public:

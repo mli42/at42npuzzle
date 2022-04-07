@@ -148,6 +148,7 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
 	if (!parse_args(argc, argv, map))
 		return false;
+	map_data_generation(); // test
 	std::cout << parse_map(map->map) << std::endl;
 	return true;
 }

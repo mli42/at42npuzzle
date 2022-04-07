@@ -11,6 +11,7 @@ void	display_map(PuzzleMap const * map);
 
 void	display_map_data(MapData const map);
 void	display_map_line(MapLine const map);
+void	display_solution_coord(void);
 
 MapData map_data_generation(void);
 MapLine map_line_generation(void);
