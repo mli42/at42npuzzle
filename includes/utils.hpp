@@ -3,6 +3,8 @@
 
 # include <iostream>
 # include <string>
+# include <cstdlib>
+# include <cmath>
 # include "PuzzleMap.hpp"
 
 void	ft_exit(const std::string &msg, bool doPrintUsage = false);
@@ -20,5 +22,7 @@ bool	isFlagSet(const int num, const int bit);
 int		setFlag(const int num, const int bit);
 
 bool	isMapRightSize(int size);
+
+bool    cmp(Node const * X, Node const * Y);
 
 #endif // UTILS_HPP

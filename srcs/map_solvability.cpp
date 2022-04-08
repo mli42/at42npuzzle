@@ -18,13 +18,23 @@ int	isInf(MapLine const solution, int val1, int val2)
 
 int isMapValid(MapData const map)
 {
+
 	MapLine sol = map_line_generation();
 	int size = 3; // a enlever quand on aura une variable globale
 	int s = 0;
+	Coord empty_tile;
 
-	for (int i = 0; i < size * size; i++)
-		for (int j = i + 1; j < (size * size) - 1; j++)
-			s += isInf(sol, map[i / 3][i % 3], map[j / 3][j % 3]);
+	for (int i = 0; i < size * size - 1; i++)
+	{
+		if (!map[i / size][i % size])
+			empty_tile = Coord(i / size, i % size);
+		for (int j = i + 1; j < size * size; j++)
+			s += isInf(sol, map[i / size][i % size], map[j / size][j % size]);
+	}
 
-	return (!(s % 2));
+	Coord empty_tile_sol = SolutionCoords[0];
+	int dist = std::abs(empty_tile.first - empty_tile_sol.first)
+			   + std::abs(empty_tile.second - empty_tile_sol.second);
+
+	return (~((s & 1) ^ (dist & 1));
 }

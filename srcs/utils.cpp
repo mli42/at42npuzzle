@@ -61,3 +61,8 @@ bool	isMapRightSize(int size) {
 	if (size < 3 || size > 17) return false;
 	return true;
 }
+
+bool cmp(Node const * X, Node const * Y)
+{
+    return (X->f > Y->f);
+}
