@@ -4,6 +4,7 @@
 # include <iostream>
 # include "./PuzzleMap.hpp"
 
-bool parsing(int argc, char **argv, PuzzleMap *const map);
+bool    parsing(int argc, char **argv, PuzzleMap *const map);
+int     isMapValid(MapData const map);
 
 #endif

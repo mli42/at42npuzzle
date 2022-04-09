@@ -42,7 +42,23 @@ class Node
         {
             if (heuristic == "manhattan")
                 this->heuristic = this->manhattan() + this->g;
+            if (heuristic == "misplaced")
+                this->heuristic = this->misplaced() + this->g;
             std::cout << "Heuristic : " << this->heuristic << std::endl;
+        }
+
+        int misplaced()
+        {
+            int s = 0;
+            int size = this->map.size();
+            extern std::map<int, Coord> SolutionCoords;
+
+            for (int i = 0; i < size * size; i++)
+            {
+                Coord sol = SolutionCoords[this->map[i / size][i % size]];
+                s += (i / size ^ sol.first || i % size ^ sol.second);
+            }
+            return s;
         }
 
         int manhattan()
@@ -56,10 +72,12 @@ class Node
 
             for (int i = 0; i < size * size; i++)
             {
-                Coord tmp = SolutionCoords[this->map[i / size][i % size]];
-                s += std::abs(i / size - tmp.first) + std::abs(i % size - tmp.second);
+                if (this->map[i / size][i % size])
+                {
+                    Coord tmp = SolutionCoords[this->map[i / size][i % size]];
+                    s += std::abs(i / size - tmp.first) + std::abs(i % size - tmp.second);
+                }
             }
-            
             return s;
         }
 };

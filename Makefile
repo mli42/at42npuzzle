@@ -26,14 +26,14 @@ NAME = n-puzzle
 SRCS_PATH = srcs/
 
 CC = clang++
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -std=c++11 -O3
 CFLAGS += -MMD
 
 ifeq ($(f), debug)
 	CFLAGS += -fsanitize=address -g3
 endif
 
-FILES = main.cpp parsing.cpp utils.cpp map_generation.cpp map_solvability.cpp
+FILES = main.cpp parsing.cpp utils.cpp map_generation.cpp map_solvability.cpp movements.cpp
 SRCS = ${addprefix ${SRCS_PATH}, ${FILES}}
 
 SRCS_FILES = ${addprefix , ${SRCS}}

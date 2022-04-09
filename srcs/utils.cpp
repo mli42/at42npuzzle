@@ -32,6 +32,7 @@ int setFlag(int num, int bit) {
 void	display_map_data(MapData const map) {
 	for (unsigned long i = 0; i < map.size(); i++)
 		display_map_line(map[i]);
+	std::cout << "\n";
 }
 
 void	display_map_line(MapLine const map)
