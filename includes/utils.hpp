@@ -6,6 +6,7 @@
 # include <cstdlib>
 # include <cmath>
 # include "PuzzleMap.hpp"
+# include "Node.hpp"
 
 void	ft_exit(const std::string &msg, bool doPrintUsage = false);
 bool	starts_with(const std::string &str, const std::string &target);
@@ -14,6 +15,7 @@ void	display_map(PuzzleMap const * map);
 void	display_map_data(MapData const map);
 void	display_map_line(MapLine const map);
 void	display_solution_coord(void);
+void    print_solution(Node const * node);
 
 MapData map_data_generation(void);
 MapLine map_line_generation(void);

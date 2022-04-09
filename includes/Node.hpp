@@ -1,3 +1,6 @@
+#ifndef NODE_HPP
+# define NODE_HPP
+
 # include "./utils.hpp"
 
 class Node
@@ -32,16 +35,21 @@ class Node
 
             this->empty_tile.first += dir.first;
             this->empty_tile.second += dir.second;
+            std::cout << "New coord : " << this->empty_tile.first << " " << this->empty_tile.second << std::endl;
         }
 
         void calculate_heuristic(std::string const heuristic)
         {
             if (heuristic == "manhattan")
-                this->h = this->manhattan() + this->g;
+                this->heuristic = this->manhattan() + this->g;
+            std::cout << "Heuristic : " << this->heuristic << std::endl;
         }
 
         int manhattan()
         {
+            /*
+                Voir is il faut compter la distance du 0 (J'ai l'impression que ça fausse la mesure)
+            */
             int s = 0;
             int size = this->map.size();
             extern std::map<int, Coord>	SolutionCoords;
@@ -55,3 +63,5 @@ class Node
             return s;
         }
 };
+
+#endif

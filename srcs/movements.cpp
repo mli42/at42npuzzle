@@ -11,7 +11,6 @@ bool isMovementValid(int size, int y, int x, Coord dir)
     && x + dir.second < size && x + dir.second >= 0);
 }
 
-
 void    expand(PuzzleMap const * map, Node current, std::priority_queue<Node, std::vector<Node>, cmp> q)
 {
     for (int dir = 0; dir < 4; dir++)
@@ -26,10 +25,3 @@ void    expand(PuzzleMap const * map, Node current, std::priority_queue<Node, st
         }
     }
 }
-
-/*
-
-    Pour print la solution il faudrait faire une fonction récursive sur le parent et print à chaque fois.
-    Comme ça, si je ne me trompe pas, j'aurais à chaque fois le premier élément print puis tous les autres dans le bon ordre
-
-*/
