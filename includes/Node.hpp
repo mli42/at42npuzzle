@@ -17,12 +17,18 @@ class Node
         {
             this->map = map;
             this->empty_tile = empty_tile;
-            if (parent)
-            {
-                this->g = parent->g + 1;
-                this->parent = parent;
-            }
-            return ;
+            this->g = parent ? parent->g + 1 : 0;
+            this->parent = parent ? parent : NULL;
+            this->heuristic = 1000;
+        }
+
+        Node(Node const & src)
+        {
+            this->map = src.map;
+            this->empty_tile = src.empty_tile;
+            this->g = src.g;
+            this->parent = src.parent;
+            this->heuristic = src.heuristic;
         }
 
         ~Node() { return; }
@@ -35,7 +41,6 @@ class Node
 
             this->empty_tile.first += dir.first;
             this->empty_tile.second += dir.second;
-            std::cout << "New coord : " << this->empty_tile.first << " " << this->empty_tile.second << std::endl;
         }
 
         void calculate_heuristic(std::string const heuristic)
@@ -44,7 +49,6 @@ class Node
                 this->heuristic = this->manhattan() + this->g;
             if (heuristic == "misplaced")
                 this->heuristic = this->misplaced() + this->g;
-            std::cout << "Heuristic : " << this->heuristic << std::endl;
         }
 
         int misplaced()

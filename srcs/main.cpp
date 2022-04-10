@@ -24,17 +24,30 @@ int main(int argc, char **argv) {
 
 	// return 0;
 	(void)argc; (void)argv;
+	std::priority_queue<Node *, std::vector<Node * >, Compare> q;
+
 
 	MapData map = map_data_generation();
-	randomize(&map, 1000, 0);
-	std::cout << "vvvvv Map vvvvv" << std::endl;
-	display_map_data(map);
 
-	std::cout << "Is map solvable ? : " << (isMapValid(map) == 0 ? "False" : "True") << std::endl;
+	Node * node = new Node(map, SolutionCoords[0], NULL);
 
-	Node node = Node(map, SolutionCoords[0], NULL);
-	node.calculate_heuristic("manhattan");
-	node.move(directionsCoords[U]);
-	node.calculate_heuristic("manhattan");
-	node.move(directionsCoords[R]);
+	randomize(&node->map, &node->empty_tile, 1, 1);
+
+	q.push(node);
+
+	int i = 0;
+	int run = 1;
+	while (run)
+	{
+		Node * tmp = q.top();
+		if (!(tmp->heuristic - tmp->g))
+		{
+			std::cout << "Solution : " << std::endl;
+			print_solution(tmp);
+			break;
+		}
+		q.pop();
+		expand(tmp, &q);
+		i++;
+	}
 }

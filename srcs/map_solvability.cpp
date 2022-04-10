@@ -20,7 +20,7 @@ int isMapValid(MapData const map)
 {
 
 	MapLine sol = map_line_generation();
-	int size = 4; // a enlever quand on aura une variable globale
+	int size = 4;
 	int s = 0;
 	Coord empty_tile;
 	extern std::map<int, Coord> SolutionCoords;

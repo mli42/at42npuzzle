@@ -68,15 +68,11 @@ void    print_solution(Node const * node)
     if (!node)
         return ;
     print_solution(node->parent);
+	//std::cin.ignore();
     display_map_data(node->map);
 }
 
 bool	isMapRightSize(int size) {
 	if (size < 3 || size > 17) return false;
 	return true;
-}
-
-bool cmp(Node const * X, Node const * Y)
-{
-    return (X->heuristic > Y->heuristic);
 }

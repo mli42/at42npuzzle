@@ -9,7 +9,7 @@ void	display_coord(std::vector<Coord> coord)
 	std::cout << "Endc" << std::endl;
 }
 
-void randomize(MapData * map, int moves, int solvability)
+void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 {
 	/*
 		Rajouter fonction swap
@@ -17,22 +17,21 @@ void randomize(MapData * map, int moves, int solvability)
 	std::vector<Coord> indexes;
 	extern std::map<int, Coord> SolutionCoords;
 	extern std::map<int, Coord> directionsCoords;
-	Coord empty_tile = SolutionCoords[0];
 	srand(time(NULL));
 
 	for (int m = 0; m < moves; m++)
 	{
 		for (int i = 0; i < 4; i++)
-			if (isMovementValid(map->size(), empty_tile.first, empty_tile.second, directionsCoords[i]))
+			if (isMovementValid(map->size(), empty_tile->first, empty_tile->second, directionsCoords[i]))
 				indexes.push_back(directionsCoords[i]);
 
 		Coord dir = indexes[rand() % indexes.size()];
-		int tmp = (*map)[empty_tile.first + dir.first][empty_tile.second + dir.second];
-		(*map)[empty_tile.first + dir.first][empty_tile.second + dir.second] = (*map)[empty_tile.first][empty_tile.second];
-		(*map)[empty_tile.first][empty_tile.second] = tmp;
-		empty_tile.first += dir.first;
-		empty_tile.second += dir.second;
-		display_map_data((*map));
+		int tmp = (*map)[empty_tile->first + dir.first][empty_tile->second + dir.second];
+		(*map)[empty_tile->first + dir.first][empty_tile->second + dir.second] = (*map)[empty_tile->first][empty_tile->second];
+		(*map)[empty_tile->first][empty_tile->second] = tmp;
+		empty_tile->first += dir.first;
+		empty_tile->second += dir.second;
+		//display_map_data((*map)); // debug
 		indexes.clear();
 	}
 
