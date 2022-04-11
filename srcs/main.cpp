@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
 	Node * node = new Node(map, SolutionCoords[0], NULL);
 
-	randomize(&node->map, &node->empty_tile, 20, 1);
+	randomize(&node->map, &node->empty_tile, 250, 1);
 
 	q.push(node);
 
@@ -43,5 +43,19 @@ int main(int argc, char **argv) {
 		q.pop();
 		expand(tmp, &q, &closed_list);
 		i++;
+	}
+
+	closed_set::iterator closed_it = closed_list.begin(), closed_ite = closed_list.end();
+	for (; closed_it != closed_ite; closed_it++) {
+		const Node *tmp = *closed_it;
+
+		closed_list.erase(closed_it);
+		delete tmp;
+	}
+
+	while (!q.empty()) {
+		// delete q.top();
+		// q.top() = NULL;
+		q.pop();
 	}
 }
