@@ -22,15 +22,6 @@ class Node
             this->heuristic = 1000;
         }
 
-        Node(Node const & src)
-        {
-            this->map = src.map;
-            this->empty_tile = src.empty_tile;
-            this->g = src.g;
-            this->parent = src.parent;
-            this->heuristic = src.heuristic;
-        }
-
         ~Node() { return; }
 
         void move(Coord const dir)

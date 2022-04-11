@@ -27,9 +27,12 @@ void    expand(Node *current, priority_queue *q, closed_set *closed_list)
 				closed_list->insert(child);
 			}
 			else if (child->g < (*closed_child)->g) {
-				q->push(child);
+				q->push(*closed_child);
 				(*closed_child)->g = child->g;
+				delete child;
 			}
-        }
+			else
+				delete child;
+		}
     }
 }

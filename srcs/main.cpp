@@ -1,5 +1,6 @@
 #include "../includes/main.hpp"
 #include "../includes/utils.hpp"
+#include <algorithm>
 
 std::map<int, Coord> SolutionCoords;
 
@@ -26,36 +27,50 @@ int main(int argc, char **argv) {
 
 	Node * node = new Node(map, SolutionCoords[0], NULL);
 
-	randomize(&node->map, &node->empty_tile, 250, 1);
+	randomize(&node->map, &node->empty_tile, 400, 1);
 
 	q.push(node);
+	closed_list.insert(node);
 
 	int i = 0;
 	while (1)
 	{
-		Node * tmp = q.top();
-		if (!(tmp->heuristic - tmp->g))
+		Node *top = q.top();
+		if (!(top->heuristic - top->g))
 		{
 			std::cout << "Solution : " << std::endl;
-			print_solution(tmp);
+			print_solution(top);
+			std::cout << "G: " << top->g << std::endl;
 			break;
 		}
 		q.pop();
-		expand(tmp, &q, &closed_list);
+		expand(top, &q, &closed_list);
 		i++;
 	}
 
-	closed_set::iterator closed_it = closed_list.begin(), closed_ite = closed_list.end();
-	for (; closed_it != closed_ite; closed_it++) {
-		const Node *tmp = *closed_it;
+	// std::vector<Node *> cleared_node;
 
-		closed_list.erase(closed_it);
-		delete tmp;
-	}
+	// while (!q.empty()) {
+	// 	Node *top = q.top();
 
-	while (!q.empty()) {
-		// delete q.top();
-		// q.top() = NULL;
-		q.pop();
-	}
+	// 	// if (std::find(cleared_node.begin(), cleared_node.end(), top) == cleared_node.end()) {
+	// 	if (std::find(closed_list.begin(), closed_list.end(), top) == closed_list.end())
+	// 	{
+	// 		delete top;
+	// 		// cleared_node.push_back(top);
+	// 	}
+	// 	q.pop();
+	// }
+
+	// closed_set::iterator closed_it = closed_list.begin(), closed_ite = closed_list.end();
+	// for (; closed_it != closed_ite; closed_it++) {
+	// 	Node *tmp = *closed_it;
+
+		// if (std::find(cleared_node.begin(), cleared_node.end(), tmp) == cleared_node.end()) {
+			// delete tmp;
+		// 	cleared_node.push_back(tmp);
+		// }
+		// closed_list.erase(closed_it);
+		// delete tmp;
+	// }
 }
