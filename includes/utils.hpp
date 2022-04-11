@@ -7,6 +7,7 @@
 # include <cmath>
 # include <time.h>
 # include <queue>
+# include <set>
 # include "PuzzleMap.hpp"
 # include "Node.hpp"
 
@@ -36,6 +37,17 @@ struct Compare
 	}
 };
 
-void	expand(Node * current, std::priority_queue<Node * , std::vector<Node * >, Compare> * q);
+struct LessNodeMapData
+{
+	bool operator()(Node const * X, Node const * Y)
+	{
+		return X->map > Y->map;
+	}
+};
+
+typedef std::priority_queue<Node *, std::vector<Node *>, Compare> priority_queue;
+typedef std::set<Node *, LessNodeMapData> closed_set;
+
+void	expand(Node *current, priority_queue *q, closed_set *closed_list);
 
 #endif // UTILS_HPP

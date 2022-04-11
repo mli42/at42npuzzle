@@ -18,20 +18,20 @@ int main(int argc, char **argv) {
 
 	// return 0;
 	(void)argc; (void)argv;
-	std::priority_queue<Node *, std::vector<Node * >, Compare> q;
+	priority_queue q;
+	closed_set closed_list;
 
 
 	MapData map = map_data_generation();
 
 	Node * node = new Node(map, SolutionCoords[0], NULL);
 
-	randomize(&node->map, &node->empty_tile, 1, 1);
+	randomize(&node->map, &node->empty_tile, 20, 1);
 
 	q.push(node);
 
 	int i = 0;
-	int run = 1;
-	while (run)
+	while (1)
 	{
 		Node * tmp = q.top();
 		if (!(tmp->heuristic - tmp->g))
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 			break;
 		}
 		q.pop();
-		expand(tmp, &q);
+		expand(tmp, &q, &closed_list);
 		i++;
 	}
 }

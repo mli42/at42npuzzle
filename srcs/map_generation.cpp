@@ -95,11 +95,3 @@ MapData map_data_generation(void)
 	//display_solution_coord();
 	return mat;
 }
-
-void make_flatten_snake(int y, int x, int *index, int size, MapLine &mat)
-{
-	static int double_size = size * size;
-	const int value = *index != double_size ? (*index)++ : 0;
-
-	mat[y * size + x] = value;
-}
