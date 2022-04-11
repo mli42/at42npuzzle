@@ -3,17 +3,11 @@
 
 std::map<int, Coord> SolutionCoords;
 
-std::map<int, Coord> directionsCoords = { {0 /*U*/, Coord(-1, 0)},
-                                          {1 /*D*/, Coord(1, 0)},
-                                          {2 /*R*/, Coord(0, 1)},
-                                          {3 /*L*/, Coord(0, -1)} };
-
-enum dir
-{
-	U,
-	D,
-	R,
-	L
+Coord directionsCoords[4] = {
+	{/*U*/ Coord(-1, 0)},
+	{/*D*/ Coord(1, 0)},
+	{/*R*/ Coord(0, 1)},
+	{/*L*/ Coord(0, -1)}
 };
 
 int main(int argc, char **argv) {

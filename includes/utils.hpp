@@ -20,7 +20,6 @@ void	display_solution_coord(void);
 void    print_solution(Node const * node);
 
 MapData map_data_generation(void);
-MapLine map_line_generation(void);
 void    randomize(MapData * map, Coord * empty_tile, int moves = 1000, int solvability = 1);
 
 bool	isFlagSet(const int num, const int bit);

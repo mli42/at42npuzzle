@@ -11,12 +11,9 @@ void	display_coord(std::vector<Coord> coord)
 
 void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 {
-	/*
-		Rajouter fonction swap
-	*/
 	std::vector<Coord> indexes;
 	extern std::map<int, Coord> SolutionCoords;
-	extern std::map<int, Coord> directionsCoords;
+	extern Coord directionsCoords[];
 	srand(time(NULL));
 
 	for (int m = 0; m < moves; m++)
@@ -26,9 +23,10 @@ void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 				indexes.push_back(directionsCoords[i]);
 
 		Coord dir = indexes[rand() % indexes.size()];
-		int tmp = (*map)[empty_tile->first + dir.first][empty_tile->second + dir.second];
-		(*map)[empty_tile->first + dir.first][empty_tile->second + dir.second] = (*map)[empty_tile->first][empty_tile->second];
-		(*map)[empty_tile->first][empty_tile->second] = tmp;
+		std::swap((*map)[empty_tile->first][empty_tile->second],
+			(*map)[empty_tile->first + dir.first][empty_tile->second + dir.second]);
+
+
 		empty_tile->first += dir.first;
 		empty_tile->second += dir.second;
 		//display_map_data((*map)); // debug
@@ -37,19 +35,23 @@ void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 
 	if (!solvability)
 	{
+		const int last_index = map->size() - 1;
+
 		if ((*map)[0][0] && (*map)[0][1])
-		{
-			int tmp = (*map)[0][0];
-			(*map)[0][0] = (*map)[0][1];
-			(*map)[0][1] = tmp;
-		}
+			std::swap((*map)[0][0], (*map)[0][1]);
 		else
-		{
-			int tmp = (*map)[map->size() - 1][map->size() - 1];
-			(*map)[map->size() - 1][map->size() - 1] = (*map)[map->size() - 1][map->size() - 2];
-			(*map)[map->size() - 1][map->size() - 2] = tmp;
-		}
+			std::swap((*map)[last_index][last_index], (*map)[last_index][last_index - 1]);
 	}
+}
+
+void make_snake(int y, int x, int *index, int size, MapData &mat)
+{
+	extern std::map<int, Coord>	SolutionCoords;
+
+	const int value = *index != size * size ? (*index)++ : 0;
+
+	mat[y][x] = value;
+	SolutionCoords.insert({value, Coord(y, x)});
 }
 
 MapData map_data_generation(void)
@@ -60,42 +62,32 @@ MapData map_data_generation(void)
 	int left = 0;
 	int right = size - 1;
 	int index = 1;
-	int value;
 	MapData mat = MapData(size, MapLine(size));
 	extern std::map<int, Coord>	SolutionCoords;
 
 	while (1) {
 		if (left > right)
 				break;
-		for (int i = left; i <= right; i++) {
-			value = index != size * size ? index++ : 0;
-			mat[top][i] = value;
-			SolutionCoords.insert({value, Coord(top, i)});
-		}
+		for (int i = left; i <= right; i++)
+			make_snake(top, i, &index, size, mat);
 		top++;
+
 		if (top > bottom)
 				break;
-		for (int i = top; i <= bottom; i++) {
-			value = index != size * size ? index++ : 0;
-			mat[i][right] = value;
-			SolutionCoords.insert({value, Coord(i, right)});
-		}
+		for (int i = top; i <= bottom; i++)
+			make_snake(i, right, &index, size, mat);
 		right--;
+
 		if (left > right)
 				break;
-		for (int i = right; i >= left; i--) {
-			value = index != size * size ? index++ : 0;
-			mat[bottom][i] = value;
-			SolutionCoords.insert({value, Coord(bottom, i)});
-		}
+		for (int i = right; i >= left; i--)
+			make_snake(bottom, i, &index, size, mat);
 		bottom--;
+
 		if (top > bottom)
 				break;
-		for (int i = bottom; i >= top; i--) {
-			value = index != size * size ? index++ : 0;
-			mat[i][left] = value;
-			SolutionCoords.insert({value, Coord(i, left)});
-		}
+		for (int i = bottom; i >= top; i--)
+			make_snake(i, left, &index, size, mat);
 		left++;
 	}
 
@@ -104,54 +96,10 @@ MapData map_data_generation(void)
 	return mat;
 }
 
-MapLine map_line_generation(void)
+void make_flatten_snake(int y, int x, int *index, int size, MapLine &mat)
 {
-	int size = 4; // a enlever quand on aura une variable globale
-	int top = 0;
-	int bottom = size - 1;
-	int left = 0;
-	int right = size - 1;
-	int index = 1;
-	int value;
-	MapLine mat = MapLine(size * size);
+	static int double_size = size * size;
+	const int value = *index != double_size ? (*index)++ : 0;
 
-	// calculer qu'une fois size * size
-
-	while (1) {
-		if (left > right)
-				break;
-		for (int i = left; i <= right; i++)
-		{
-			value = index != size * size ? index++ : 0;
-			mat[top * size + i] = value;
-		}
-		top++;
-		if (top > bottom)
-				break;
-		for (int i = top; i <= bottom; i++)
-		{
-			value = index != size * size ? index++ : 0;
-			mat[i * size + right] = value;
-		}
-		right--;
-		if (left > right)
-				break;
-		for (int i = right; i >= left; i--)
-		{
-			value = index != size * size ? index++ : 0;
-			mat[bottom * size + i] = value;
-		}
-		bottom--;
-		if (top > bottom)
-				break;
-		for (int i = bottom; i >= top; i--)
-		{
-			value = index != size * size ? index++ : 0;
-			mat[i * size + left] = value;
-		}
-		left++;
-	}
-
-	//display_map_line(mat); // pour debug
-	return mat;
+	mat[y * size + x] = value;
 }
