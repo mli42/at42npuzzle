@@ -56,7 +56,7 @@ void make_snake(int y, int x, int *index, int size, MapData &mat)
 
 MapData map_data_generation(void)
 {
-	int size = 4; // a enlever quand on aura une variable globale
+	int size = 5; // a enlever quand on aura une variable globale
 	int top = 0;
 	int bottom = size - 1;
 	int left = 0;

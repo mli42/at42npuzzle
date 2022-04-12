@@ -3,6 +3,9 @@
 
 # include "./utils.hpp"
 
+MapLine map_line_generation();
+int		isInf(MapLine const solution, int val1, int val2);
+
 class Node
 {
     public:
@@ -35,7 +38,9 @@ class Node
                 this->heuristic = this->manhattan() + this->g;
             if (heuristic == "misplaced")
                 this->heuristic = this->manhattan() * this->misplaced() + this->g;
-        }
+			if (heuristic == "conflicts")
+				this->heuristic = this->manhattan() * this->misplaced() + 4 * this->conflicts() + this->g;
+		}
 
         int misplaced()
         {
@@ -71,6 +76,67 @@ class Node
             }
             return s;
         }
+
+		int conflicts()
+		{
+			int size = 5;
+			int conflicts = 0;
+			MapLine solution = map_line_generation();
+			extern std::map<int, Coord> SolutionCoords;
+			bool in_col[size * size];
+			bool in_row[size * size];
+
+			for (int y = 0; y < size; y++)
+			{
+				for (int x = 0; x < size; x++)
+				{
+					int i = y * size + x;
+
+					Coord sol = SolutionCoords[this->map[y][x]];
+
+					in_col[i] = (sol.second == x);
+					in_row[i] = (sol.first == y);
+				}
+			}
+
+			for (int y = 0; y < size; y++)
+			{
+				for (int x = 0; x < size; x++)
+				{
+					int i = y * size + x;
+
+					if (!this->map[y][x])
+						continue;
+
+					if (in_col[i])
+					{
+						for (int r = y + 1; r < size; r++)
+						{
+							int j = r * size + x;
+
+							if (!this->map[r][x])
+								continue;
+							if (in_col[j] && !isInf(solution, this->map[r][x], this->map[y][x]))
+								conflicts++;
+						}
+					}
+
+					if (in_row[i])
+					{
+						for (int c = x + 1; c < size; c++)
+						{
+							int j = y * size + c;
+
+							if (!this->map[y][c])
+								continue;
+							if (in_row[j] && !isInf(solution, this->map[y][c], this->map[y][x]))
+								conflicts++;
+						}
+					}
+				}
+			}
+			return conflicts;
+		}
 };
 
 #endif
