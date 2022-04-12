@@ -6,7 +6,7 @@
 
 bool parse_map(MapData map)
 {
-	int size = 3; // a enlever quand on aura une variable globale
+	int size = 4; // a enlever quand on aura une variable globale
 	std::map<int, int> mapCheck;
 	auto ite = mapCheck.end();
 
@@ -149,6 +149,7 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 bool parsing(int argc, char **argv, PuzzleMap *const map) {
 	if (!parse_args(argc, argv, map))
 		return false;
+	map_data_generation(); // test
 	std::cout << parse_map(map->map) << std::endl;
 	return true;
 }
