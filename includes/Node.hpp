@@ -14,7 +14,7 @@ class Node
         Node * parent;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
-			map(map), empty_tile(empty_tile), heuristic(1000), g(parent ? parent->g + 1 : 0), parent(parent) {
+			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
 			return ;
 		}
 
@@ -34,7 +34,7 @@ class Node
             if (heuristic == "manhattan")
                 this->heuristic = this->manhattan() + this->g;
             if (heuristic == "misplaced")
-                this->heuristic = this->misplaced() + this->g;
+                this->heuristic = this->manhattan() * this->misplaced() + this->g;
         }
 
         int misplaced()
