@@ -6,7 +6,7 @@
 #    By: mli <mli@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/04 13:40:21 by mli               #+#    #+#              #
-#    Updated: 2022/04/12 14:05:03 by mli              ###   ########.fr        #
+#    Updated: 2022/04/12 14:45:22 by mli              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ ifeq ($(f), debug)
 	CFLAGS += -fsanitize=address -g3
 endif
 
-FILES = main.cpp parsing.cpp utils.cpp map_generation.cpp map_solvability.cpp movements.cpp Errno.cpp
+FILES = main.cpp parsing.cpp utils.cpp map_generation.cpp map_solvability.cpp movements.cpp Errno.cpp HeuristicType.cpp
 SRCS = ${addprefix ${SRCS_PATH}, ${FILES}}
 
 SRCS_FILES = ${addprefix , ${SRCS}}

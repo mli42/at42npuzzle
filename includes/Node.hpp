@@ -2,6 +2,7 @@
 # define NODE_HPP
 
 # include "./utils.hpp"
+# include "./HeuristicType.hpp"
 
 class Node
 {
@@ -12,6 +13,8 @@ class Node
         int heuristic;
         int g;
         Node * parent;
+
+		static std::string heuristic_type;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
 			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
@@ -29,11 +32,11 @@ class Node
             this->empty_tile.second += dir.second;
         }
 
-        void calculate_heuristic(std::string const heuristic)
+        void calculate_heuristic(void)
         {
-            if (heuristic == "manhattan")
+            if (heuristic_type == HeuristicType::manhattan)
                 this->heuristic = this->manhattan() + this->g;
-            if (heuristic == "misplaced")
+            else if (heuristic_type == HeuristicType::misplaced)
                 this->heuristic = this->manhattan() * this->misplaced() + this->g;
         }
 

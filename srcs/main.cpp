@@ -3,6 +3,7 @@
 #include "../includes/utils.hpp"
 
 std::map<int, Coord> SolutionCoords;
+std::string Node::heuristic_type;
 
 Coord directionsCoords[4] = {
 	{/*U*/ Coord(-1, 0)},
@@ -12,6 +13,7 @@ Coord directionsCoords[4] = {
 };
 
 int main(int argc, char **argv) {
+	Node::heuristic_type = HeuristicType::misplaced;
 	// PuzzleMap map;
 
 	// if (parsing(argc, argv, &map) == false)
@@ -37,7 +39,6 @@ int main(int argc, char **argv) {
 	q.push(node);
 	closed_list.insert(node);
 	collector_stack.push(node);
-
 
 	while (1)
 	{

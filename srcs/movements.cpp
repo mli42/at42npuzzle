@@ -18,7 +18,7 @@ void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeColle
         {
             Node * child = new Node(current->map, current->empty_tile, current);
             child->move(directionsCoords[dir]);
-            child->calculate_heuristic("manhattan");
+            child->calculate_heuristic();
 
 			closed_set::iterator closed_child = closed_list->find(child);
 
