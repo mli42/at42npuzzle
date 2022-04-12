@@ -5,7 +5,7 @@
 
 bool parse_map(MapData map)
 {
-	int size = 4; // a enlever quand on aura une variable globale
+	int size = 5; // a enlever quand on aura une variable globale
 	std::map<int, int> mapCheck;
 	auto ite = mapCheck.end();
 

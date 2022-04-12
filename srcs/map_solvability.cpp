@@ -3,7 +3,7 @@
 
 int	isInf(MapLine const solution, int val1, int val2)
 {
-	int size = 4; // a enlever quand on aura une variable globale
+	int size = 5; // a enlever quand on aura une variable globale
 	int check1 = 0;
 
 	for (int i = 0; i < size * size; i++)
@@ -16,7 +16,7 @@ int	isInf(MapLine const solution, int val1, int val2)
 	return 0;
 }
 
-static MapLine map_line_generation()
+MapLine map_line_generation()
 {
 	extern std::map<int, Coord> SolutionCoords;
 	MapLine sol(SolutionCoords.size());
@@ -34,7 +34,7 @@ static MapLine map_line_generation()
 int isMapValid(MapData const map)
 {
 	MapLine sol = map_line_generation();
-	int size = 4;
+	int size = 5;
 	int s = 0;
 	Coord empty_tile;
 	extern std::map<int, Coord> SolutionCoords;
