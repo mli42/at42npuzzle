@@ -1,6 +1,5 @@
 #include "../includes/main.hpp"
 #include "../includes/utils.hpp"
-#include <algorithm>
 
 std::map<int, Coord> SolutionCoords;
 
@@ -23,10 +22,8 @@ int main(int argc, char **argv) {
 	closed_set closed_list;
 	NodeCollector collector_stack;
 
-
 	MapData map = map_data_generation();
-
-	Node * node = new Node(map, SolutionCoords[0], NULL);
+	Node *node = new Node(map, SolutionCoords[0], NULL);
 
 	randomize(&node->map, &node->empty_tile, 220, 1);
 
