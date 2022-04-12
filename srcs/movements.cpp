@@ -1,4 +1,5 @@
 # include "../includes/utils.hpp"
+# include "../includes/NodeUtils.hpp"
 
 bool    isMovementValid(int size, int y, int x, Coord dir)
 {

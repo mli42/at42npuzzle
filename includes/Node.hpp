@@ -1,14 +1,15 @@
 #ifndef NODE_HPP
 # define NODE_HPP
 
-# include "./utils.hpp"
 # include "./HeuristicType.hpp"
+# include "./Types.hpp"
 
 class Node
 {
     public:
 
         MapData map;
+		size_t size;
         Coord empty_tile;
         int heuristic;
         int g;
@@ -17,7 +18,7 @@ class Node
 		static std::string heuristic_type;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
-			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
+			map(map), size(map.size()), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
 			return ;
 		}
 

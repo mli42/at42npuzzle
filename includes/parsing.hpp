@@ -4,8 +4,7 @@
 # include <iostream>
 # include <string>
 # include <fstream>
-# include <cstring>
-# include "PuzzleMap.hpp"
+# include "Node.hpp"
 
 enum e_flag {
 	ARG_NONE = 0,
@@ -17,11 +16,11 @@ enum e_flag {
 struct FlagExec{
 	e_flag type;
 	const std::string start;
-	bool (*fct)(const std::string &value, PuzzleMap *const puzzlemap);
+	bool (*fct)(const std::string &value, Node *const node);
 };
 
-static bool parse_file(const std::string &filename, PuzzleMap * const map);
-static bool parse_size(const std::string &str, PuzzleMap *const map);
-static bool parse_heuristic(const std::string &str, PuzzleMap *const map);
+static bool parse_file(const std::string &filename, Node * const map);
+static bool parse_size(const std::string &str, Node *const map);
+static bool parse_heuristic(const std::string &str, Node *const map);
 
 #endif // PARSING_HPP

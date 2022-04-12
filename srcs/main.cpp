@@ -1,6 +1,7 @@
 #include "../includes/main.hpp"
 #include "../includes/Errno.hpp"
 #include "../includes/utils.hpp"
+#include "../includes/NodeUtils.hpp"
 
 std::map<int, Coord> SolutionCoords;
 std::string Node::heuristic_type;
@@ -14,7 +15,7 @@ Coord directionsCoords[4] = {
 
 int main(int argc, char **argv) {
 	Node::heuristic_type = HeuristicType::misplaced;
-	// PuzzleMap map;
+	// Node map;
 
 	// if (parsing(argc, argv, &map) == false)
 	// 	return 1;

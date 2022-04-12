@@ -1,4 +1,5 @@
 #include "../includes/utils.hpp"
+#include <iostream>
 
 static void printUsage(void) {
 	std::cerr << "Usage:" << std::endl;
@@ -61,15 +62,6 @@ void display_solution_coord()
 		std::cout << " " << it->second.second << ")" << std::endl;
 		it++;
 	}
-}
-
-void    print_solution(Node const * node)
-{
-    if (!node)
-        return ;
-    print_solution(node->parent);
-	// std::cin.ignore();
-    display_map_data(node->map);
 }
 
 bool	isMapRightSize(int size) {

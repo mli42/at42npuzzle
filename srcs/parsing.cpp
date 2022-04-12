@@ -1,4 +1,4 @@
-#include "../includes/PuzzleMap.hpp"
+#include "../includes/Node.hpp"
 #include "../includes/utils.hpp"
 #include "../includes/parsing.hpp"
 #include "../includes/Errno.hpp"
@@ -35,7 +35,7 @@ std::vector<int> parse_line(char *line) {
 	return split_line;
 }
 
-static bool parse_file(const std::string &filename, PuzzleMap * const map) {
+static bool parse_file(const std::string &filename, Node * const map) {
 	std::ifstream f;
 	std::string line;
 	std::vector<int> tmp;
@@ -81,7 +81,7 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 	return true;
 }
 
-static bool parse_size(const std::string &str, PuzzleMap *const map) {
+static bool parse_size(const std::string &str, Node *const map) {
 	const int isNum = std::regex_match(str, std::regex("\\d+"));
 
 	if (isNum == false) return false;
@@ -92,7 +92,7 @@ static bool parse_size(const std::string &str, PuzzleMap *const map) {
 	return true;
 }
 
-static bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
+static bool parse_heuristic(const std::string &str, Node *const map) {
 	(void)str; (void)map;
 	std::cout << "Call heuristic with " << str << std::endl;
 	return true;
@@ -104,7 +104,7 @@ bool hasIncompatibleFlags(int flag) {
 	return false;
 }
 
-bool parse_args(int argc, char **argv, PuzzleMap *const map) {
+bool parse_args(int argc, char **argv, Node *const map) {
 	std::vector<FlagExec> exec = std::vector<FlagExec>();
 	std::vector<FlagExec>::iterator it, ite;
 	int flag = 0;
@@ -146,7 +146,7 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 	return true;
 }
 
-bool parsing(int argc, char **argv, PuzzleMap *const map) {
+bool parsing(int argc, char **argv, Node *const map) {
 	if (!parse_args(argc, argv, map))
 		return false;
 	map_data_generation(); // test

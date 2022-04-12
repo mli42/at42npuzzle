@@ -1,5 +1,6 @@
-#include "../includes/PuzzleMap.hpp"
+#include "../includes/Node.hpp"
 #include "../includes/utils.hpp"
+#include <cmath>
 
 int	isInf(MapLine const solution, int val1, int val2)
 {

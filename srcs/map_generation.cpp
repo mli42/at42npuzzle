@@ -1,5 +1,6 @@
-#include "../includes/PuzzleMap.hpp"
 #include "../includes/utils.hpp"
+#include <time.h>
+#include <iostream>
 
 void	display_coord(std::vector<Coord> coord)
 {
