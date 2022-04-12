@@ -8,6 +8,7 @@
 # include <time.h>
 # include <queue>
 # include <set>
+# include <stack>
 # include "PuzzleMap.hpp"
 # include "Node.hpp"
 
@@ -47,7 +48,8 @@ struct LessNodeMapData
 
 typedef std::priority_queue<Node *, std::vector<Node *>, Compare> priority_queue;
 typedef std::set<Node *, LessNodeMapData> closed_set;
+typedef std::stack<Node *> NodeCollector;
 
-void	expand(Node *current, priority_queue *q, closed_set *closed_list);
+void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack);
 
 #endif // UTILS_HPP

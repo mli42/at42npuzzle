@@ -21,16 +21,18 @@ int main(int argc, char **argv) {
 	(void)argc; (void)argv;
 	priority_queue q;
 	closed_set closed_list;
+	NodeCollector collector_stack;
 
 
 	MapData map = map_data_generation();
 
 	Node * node = new Node(map, SolutionCoords[0], NULL);
 
-	randomize(&node->map, &node->empty_tile, 400, 1);
+	randomize(&node->map, &node->empty_tile, 220, 1);
 
 	q.push(node);
 	closed_list.insert(node);
+	collector_stack.push(node);
 
 	int i = 0;
 	while (1)
@@ -44,33 +46,12 @@ int main(int argc, char **argv) {
 			break;
 		}
 		q.pop();
-		expand(top, &q, &closed_list);
+		expand(top, &q, &closed_list, &collector_stack);
 		i++;
 	}
 
-	// std::vector<Node *> cleared_node;
-
-	// while (!q.empty()) {
-	// 	Node *top = q.top();
-
-	// 	// if (std::find(cleared_node.begin(), cleared_node.end(), top) == cleared_node.end()) {
-	// 	if (std::find(closed_list.begin(), closed_list.end(), top) == closed_list.end())
-	// 	{
-	// 		delete top;
-	// 		// cleared_node.push_back(top);
-	// 	}
-	// 	q.pop();
-	// }
-
-	// closed_set::iterator closed_it = closed_list.begin(), closed_ite = closed_list.end();
-	// for (; closed_it != closed_ite; closed_it++) {
-	// 	Node *tmp = *closed_it;
-
-		// if (std::find(cleared_node.begin(), cleared_node.end(), tmp) == cleared_node.end()) {
-			// delete tmp;
-		// 	cleared_node.push_back(tmp);
-		// }
-		// closed_list.erase(closed_it);
-		// delete tmp;
-	// }
+	while (!collector_stack.empty()) {
+		delete collector_stack.top();
+		collector_stack.pop();
+	}
 }

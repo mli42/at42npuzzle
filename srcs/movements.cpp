@@ -7,7 +7,7 @@ bool    isMovementValid(int size, int y, int x, Coord dir)
 }
 
 
-void    expand(Node *current, priority_queue *q, closed_set *closed_list)
+void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack)
 {
 	extern Coord directionsCoords[];
 
@@ -25,6 +25,7 @@ void    expand(Node *current, priority_queue *q, closed_set *closed_list)
 			if (closed_child == closed_list->end()) {
 				q->push(child);
 				closed_list->insert(child);
+				collector_stack->push(child);
 			}
 			else if (child->g < (*closed_child)->g) {
 				q->push(*closed_child);

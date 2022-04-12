@@ -13,14 +13,10 @@ class Node
         int g;
         Node * parent;
 
-        Node(MapData const map, Coord const empty_tile, Node * parent = NULL)
-        {
-            this->map = map;
-            this->empty_tile = empty_tile;
-            this->g = parent ? parent->g + 1 : 0;
-            this->parent = parent ? parent : NULL;
-            this->heuristic = 1000;
-        }
+		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
+			map(map), empty_tile(empty_tile), heuristic(1000), g(parent ? parent->g + 1 : 0), parent(parent) {
+			return ;
+		}
 
         ~Node() { return; }
 
