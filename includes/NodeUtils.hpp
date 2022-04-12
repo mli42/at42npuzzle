@@ -28,5 +28,6 @@ typedef std::stack<Node *> NodeCollector;
 
 void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack);
 void    print_solution(Node const *node);
+void	print_node_content(const Node *const node);
 
 #endif

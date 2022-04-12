@@ -9,16 +9,17 @@ class Node
     public:
 
         MapData map;
-		size_t size;
         Coord empty_tile;
         int heuristic;
         int g;
         Node * parent;
 
 		static std::string heuristic_type;
+		static size_t size;
+		static size_t double_size;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
-			map(map), size(map.size()), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
+			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
 			return ;
 		}
 

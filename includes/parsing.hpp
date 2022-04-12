@@ -19,8 +19,4 @@ struct FlagExec{
 	bool (*fct)(const std::string &value, Node *const node);
 };
 
-static bool parse_file(const std::string &filename, Node * const map);
-static bool parse_size(const std::string &str, Node *const map);
-static bool parse_heuristic(const std::string &str, Node *const map);
-
 #endif // PARSING_HPP

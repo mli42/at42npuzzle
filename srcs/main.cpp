@@ -5,6 +5,8 @@
 
 std::map<int, Coord> SolutionCoords;
 std::string Node::heuristic_type;
+size_t Node::size = 4;
+size_t Node::double_size = Node::size * 2;
 
 Coord directionsCoords[4] = {
 	{/*U*/ Coord(-1, 0)},
@@ -15,27 +17,25 @@ Coord directionsCoords[4] = {
 
 int main(int argc, char **argv) {
 	Node::heuristic_type = HeuristicType::misplaced;
-	// Node map;
+	Node *node = NULL;
 
-	// if (parsing(argc, argv, &map) == false)
-	// 	return 1;
-
-	// return 0;
-	(void)argc; (void)argv;
-
+	parsing(argc, argv, &node);
 	if (Errno::hasErr()) {
 		Errno::show();
 		return (1);
 	}
 
+	return 0;
+
 	priority_queue q;
 	closed_set closed_list;
 	NodeCollector collector_stack;
-
 	MapData map = map_data_generation();
-	Node *node = new Node(map, SolutionCoords[0], NULL);
 
-	randomize(&node->map, &node->empty_tile, 220, 1);
+	if (node == NULL) {
+		node = new Node(map, SolutionCoords[0], NULL);
+		randomize(&node->map, &node->empty_tile, 220, 1);
+	}
 
 	q.push(node);
 	closed_list.insert(node);

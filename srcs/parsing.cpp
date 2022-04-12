@@ -3,18 +3,22 @@
 #include "../includes/parsing.hpp"
 #include "../includes/Errno.hpp"
 #include <regex>
+#include "../includes/NodeUtils.hpp" // remove at the end
 
-bool parse_map(MapData map)
+bool parse_map(Node *node)
 {
-	int size = 4; // a enlever quand on aura une variable globale
+	const size_t &size = Node::size;
+	const MapData map = node->map;
 	std::map<int, int> mapCheck;
 	auto ite = mapCheck.end();
 
-	for (int i = 0; i < size * size; i++)
+	if (node->map.empty())
+		return true;
+	for (size_t i = 0; i < Node::double_size; i++)
 		mapCheck.insert({i, 0});
 
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
+	for (size_t i = 0; i < size; i++)
+		for (size_t j = 0; j < size; j++)
 			mapCheck[map[i][j]] += 1;
 
 	for (auto it = mapCheck.begin(); it != ite; ++it)
@@ -35,7 +39,18 @@ std::vector<int> parse_line(char *line) {
 	return split_line;
 }
 
-static bool parse_file(const std::string &filename, Node * const map) {
+static bool parse_size(const std::string &str, Node *const node) {
+	const int isNum = std::regex_match(str, std::regex("\\d+"));
+
+	if (isNum == false) return false;
+	const int size = atoi(str.c_str());
+	if (isMapRightSize(size) == false) return false;
+
+	node->size = size;
+	return true;
+}
+
+static bool parse_file(const std::string &filename, Node *const node) {
 	std::ifstream f;
 	std::string line;
 	std::vector<int> tmp;
@@ -54,7 +69,7 @@ static bool parse_file(const std::string &filename, Node * const map) {
 			if (!isFlagSet(type, ARG_SIZE))
 			{
 				token_token = strtok(token_line, " ");
-				if (parse_size(token_token, map) == false)
+				if (parse_size(token_token, node) == false)
 				{
 					f.close();
 					return false;
@@ -64,38 +79,38 @@ static bool parse_file(const std::string &filename, Node * const map) {
 			else
 			{
 				tmp = parse_line(token_line);
-				if (tmp.size() != map->size)
+				if (tmp.size() != Node::size)
 				{
 					f.close();
 					return false;
 				}
-				map->map.push_back(tmp);
+				node->map.push_back(tmp);
 				tmp.clear();
 			}
 		}
 	}
 	f.close();
-	if (map->map.size() != map->size)
+	if (node->map.size() != Node::size)
 		return false;
-	display_map_data(map->map); // Pour debug
+	display_map_data(node->map); // Pour debug
 	return true;
 }
 
-static bool parse_size(const std::string &str, Node *const map) {
-	const int isNum = std::regex_match(str, std::regex("\\d+"));
+static bool parse_heuristic(const std::string &str, Node *const node) {
+	const std::string heuristics[] = {
+		HeuristicType::manhattan,
+		HeuristicType::misplaced
+	};
+	const size_t size = sizeof(heuristics) / sizeof(*heuristics);
 
-	if (isNum == false) return false;
-	const int size = atoi(str.c_str());
-	if (isMapRightSize(size) == false) return false;
-
-	map->size = size;
-	return true;
-}
-
-static bool parse_heuristic(const std::string &str, Node *const map) {
-	(void)str; (void)map;
-	std::cout << "Call heuristic with " << str << std::endl;
-	return true;
+	for (unsigned short int i = 0; i < size; ++i) {
+		if (heuristics[i] == str) {
+			node->heuristic_type = str;
+			return true;
+		}
+	}
+	Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'" + " is an unknown heuristic");
+	return false;
 }
 
 bool hasIncompatibleFlags(int flag) {
@@ -104,7 +119,7 @@ bool hasIncompatibleFlags(int flag) {
 	return false;
 }
 
-bool parse_args(int argc, char **argv, Node *const map) {
+bool parse_args(int argc, char **argv, Node **node) {
 	std::vector<FlagExec> exec = std::vector<FlagExec>();
 	std::vector<FlagExec>::iterator it, ite;
 	int flag = 0;
@@ -140,16 +155,20 @@ bool parse_args(int argc, char **argv, Node *const map) {
 
 		for (it = exec.begin(); it != ite; it++)
 			if (starts_with(str, it->start))
-				if (!it->fct(str.substr(it->start.length()), map))
+				if (!it->fct(str.substr(it->start.length()), *node))
 					return false;
 	}
 	return true;
 }
 
-bool parsing(int argc, char **argv, Node *const map) {
-	if (!parse_args(argc, argv, map))
+bool	parsing(int argc, char **argv, Node **node) {
+	*node = new Node(MapData(), Coord(), NULL);
+
+	if (!parse_args(argc, argv, node) || !parse_map(*node)) {
+		delete *node;
+		*node = NULL;
 		return false;
-	map_data_generation(); // test
-	std::cout << parse_map(map->map) << std::endl;
+	}
+	print_node_content(*node);
 	return true;
 }
