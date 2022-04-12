@@ -32,12 +32,18 @@ int setFlag(int num, int bit) {
 void	display_map_data(MapData const map) {
 	for (unsigned long i = 0; i < map.size(); i++)
 		display_map_line(map[i]);
+	std::cout << "\n";
 }
 
 void	display_map_line(MapLine const map)
 {
 	for (unsigned long i = 0; i < map.size(); i++)
-		std::cout << map[i] << "\t";
+	{
+		if (!map[i])
+			std::cout << "\033[91m" << map[i] << "\033[0m\t";
+		else
+			std::cout << map[i] << "\t";
+	}
 	std::cout << "\n";
 }
 
@@ -55,6 +61,15 @@ void display_solution_coord()
 		std::cout << " " << it->second.second << ")" << std::endl;
 		it++;
 	}
+}
+
+void    print_solution(Node const * node)
+{
+    if (!node)
+        return ;
+    print_solution(node->parent);
+	// std::cin.ignore();
+    display_map_data(node->map);
 }
 
 bool	isMapRightSize(int size) {
