@@ -101,7 +101,9 @@ static bool parse_file(const std::string &filename, Node *const node) {
 static bool parse_heuristic(const std::string &str, Node *const node) {
 	const std::string heuristics[] = {
 		HeuristicType::manhattan,
-		HeuristicType::misplaced
+		HeuristicType::misplaced,
+		HeuristicType::conflicts,
+		HeuristicType::euclidian,
 	};
 	const size_t size = sizeof(heuristics) / sizeof(*heuristics);
 

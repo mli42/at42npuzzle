@@ -16,7 +16,7 @@ int	isInf(MapLine const solution, int val1, int val2)
 	return 0;
 }
 
-static MapLine map_line_generation()
+MapLine map_line_generation()
 {
 	extern std::map<int, Coord> SolutionCoords;
 	MapLine sol(SolutionCoords.size());

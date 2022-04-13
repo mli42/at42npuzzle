@@ -39,14 +39,18 @@ int main(int argc, char **argv) {
 	closed_list.insert(node);
 	collector_stack.push(node);
 
+	size_t max = 0;
 	while (1)
 	{
 		Node *top = q.top();
+		if (max < q.size())
+			max = q.size();
 		if (!(top->heuristic - top->g))
 		{
 			std::cout << "Solution : " << std::endl;
 			print_solution(top);
 			std::cout << "G: " << top->g << std::endl;
+			std::cout << "Size complexity : " << max << std::endl;
 			break;
 		}
 		q.pop();
