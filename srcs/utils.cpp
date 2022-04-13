@@ -27,7 +27,7 @@ void	display_map_line(MapLine const map)
 	for (unsigned long i = 0; i < map.size(); i++)
 	{
 		if (!map[i])
-			std::cout << "\033[91m" << map[i] << "\033[0m\t";
+			std::cout << RED << map[i] << "\t" << EOC;
 		else
 			std::cout << map[i] << "\t";
 	}

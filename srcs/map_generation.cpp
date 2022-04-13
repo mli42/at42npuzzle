@@ -91,8 +91,5 @@ MapData map_data_generation(void)
 			make_snake(i, left, &index, mat);
 		left++;
 	}
-
-	display_map_data(mat); // pour debug
-	//display_solution_coord();
 	return mat;
 }
