@@ -8,7 +8,7 @@
 
 struct Compare
 {
-	bool operator()(Node const * X, Node const * Y)
+	bool operator()(Node const * X, Node const * Y) const
 	{
 		return X->heuristic > Y->heuristic;
 	}
@@ -16,7 +16,7 @@ struct Compare
 
 struct LessNodeMapData
 {
-	bool operator()(Node const * X, Node const * Y)
+	bool operator()(Node const * X, Node const * Y) const
 	{
 		return X->map > Y->map;
 	}
