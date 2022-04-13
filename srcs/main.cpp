@@ -1,7 +1,12 @@
 #include "../includes/main.hpp"
+#include "../includes/Errno.hpp"
 #include "../includes/utils.hpp"
+#include "../includes/NodeUtils.hpp"
 
 std::map<int, Coord> SolutionCoords;
+std::string Node::heuristic_type;
+size_t Node::size = 4;
+size_t Node::double_size = Node::size * Node::size;
 
 Coord directionsCoords[4] = {
 	{/*U*/ Coord(-1, 0)},
@@ -11,29 +16,30 @@ Coord directionsCoords[4] = {
 };
 
 int main(int argc, char **argv) {
-	// PuzzleMap map;
+	Node::heuristic_type = HeuristicType::misplaced;
+	Node *node = NULL;
 
-	// if (parsing(argc, argv, &map) == false)
-	// 	return 1;
+	parsing(argc, argv, &node);
+	if (Errno::hasErr()) {
+		Errno::show();
+		return (1);
+	}
 
-	// return 0;
-	(void)argc; (void)argv;
 	priority_queue q;
 	closed_set closed_list;
 	NodeCollector collector_stack;
 
-	MapData map = map_data_generation();
-	Node *node = new Node(map, SolutionCoords[0], NULL);
-
-	randomize(&node->map, &node->empty_tile, 10000, 1);
+	if (node == NULL) {
+		MapData map = map_data_generation();
+		node = new Node(map, SolutionCoords[0], NULL);
+		randomize(&node->map, &node->empty_tile, 220, 1);
+	}
 
 	q.push(node);
 	closed_list.insert(node);
 	collector_stack.push(node);
 
 	size_t max = 0;
-
-	int i = 0;
 	while (1)
 	{
 		Node *top = q.top();
@@ -49,11 +55,12 @@ int main(int argc, char **argv) {
 		}
 		q.pop();
 		expand(top, &q, &closed_list, &collector_stack);
-		i++;
 	}
 
 	while (!collector_stack.empty()) {
 		delete collector_stack.top();
 		collector_stack.pop();
 	}
+
+	return (0);
 }

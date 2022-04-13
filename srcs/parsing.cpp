@@ -1,24 +1,29 @@
-#include "../includes/PuzzleMap.hpp"
+#include "../includes/Node.hpp"
 #include "../includes/utils.hpp"
 #include "../includes/parsing.hpp"
+#include "../includes/Errno.hpp"
 #include <regex>
+#include "../includes/NodeUtils.hpp" // remove at the end
 
-bool parse_map(MapData map)
+bool parse_map(Node *node)
 {
-	int size = 5; // a enlever quand on aura une variable globale
+	const size_t &size = Node::size;
+	const MapData map = node->map;
 	std::map<int, int> mapCheck;
 	auto ite = mapCheck.end();
 
-	for (int i = 0; i < size * size; i++)
+	if (node->map.empty())
+		return true;
+	for (size_t i = 0; i < Node::double_size; i++)
 		mapCheck.insert({i, 0});
 
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
+	for (size_t i = 0; i < size; i++)
+		for (size_t j = 0; j < size; j++)
 			mapCheck[map[i][j]] += 1;
 
 	for (auto it = mapCheck.begin(); it != ite; ++it)
 		if (it->second != 1)
-			return false;
+			return Errno::setError(Errno::NP_LOGIC, "File: wrong tile");
 
 	return true;
 }
@@ -34,7 +39,21 @@ std::vector<int> parse_line(char *line) {
 	return split_line;
 }
 
-static bool parse_file(const std::string &filename, PuzzleMap * const map) {
+static bool parse_size(const std::string &str, Node *const node) {
+	const int isNum = std::regex_match(str, std::regex("\\d+"));
+
+	if (isNum == false)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing: not a digit");
+	const int size = atoi(str.c_str());
+	if (isMapRightSize(size) == false)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing size: wrong value");
+
+	node->size = size;
+	node->double_size = size * size;
+	return true;
+}
+
+static bool parse_file(const std::string &filename, Node *const node) {
 	std::ifstream f;
 	std::string line;
 	std::vector<int> tmp;
@@ -44,57 +63,57 @@ static bool parse_file(const std::string &filename, PuzzleMap * const map) {
 
 	f.open(filename);
 	if (!f.is_open())
-		ft_exit("Cannot read file " + filename);
+		return Errno::setError(Errno::NP_CANT_OPEN, "'" + filename + "'");
 	while (std::getline(f, line))
 	{
-		if (line[0] != '#')
+		if (line[0] == '#')
+			continue ;
+		token_line = strtok(&line[0], "#");
+		if (!isFlagSet(type, ARG_SIZE))
 		{
-			token_line = strtok(&line[0], "#");
-			if (!isFlagSet(type, ARG_SIZE))
+			token_token = strtok(token_line, " ");
+			if (parse_size(token_token, node) == false)
 			{
-				token_token = strtok(token_line, " ");
-				if (parse_size(token_token, map) == false)
-				{
-					f.close();
-					return false;
-				}
-				type = setFlag(type, ARG_SIZE);
+				f.close();
+				return Errno::setError(Errno::NP_LOGIC, "File corrupted (size)");
 			}
-			else
+			type = setFlag(type, ARG_SIZE);
+		}
+		else
+		{
+			tmp = parse_line(token_line);
+			if (tmp.size() != Node::size)
 			{
-				tmp = parse_line(token_line);
-				if (tmp.size() != map->size)
-				{
-					f.close();
-					return false;
-				}
-				map->map.push_back(tmp);
-				tmp.clear();
+				f.close();
+				return Errno::setError(Errno::NP_LOGIC, "File corrupted (row length not identical)");
 			}
+			node->map.push_back(tmp);
+			tmp.clear();
 		}
 	}
 	f.close();
-	if (map->map.size() != map->size)
-		return false;
-	display_map_data(map->map); // Pour debug
+	if (node->map.size() != Node::size)
+		return Errno::setError(Errno::NP_LOGIC, "File corrupted (col length not identical)");
+	display_map_data(node->map); // Pour debug
 	return true;
 }
 
-static bool parse_size(const std::string &str, PuzzleMap *const map) {
-	const int isNum = std::regex_match(str, std::regex("\\d+"));
+static bool parse_heuristic(const std::string &str, Node *const node) {
+	const std::string heuristics[] = {
+		HeuristicType::manhattan,
+		HeuristicType::misplaced,
+		HeuristicType::conflicts,
+		HeuristicType::euclidian,
+	};
+	const size_t size = sizeof(heuristics) / sizeof(*heuristics);
 
-	if (isNum == false) return false;
-	const int size = atoi(str.c_str());
-	if (isMapRightSize(size) == false) return false;
-
-	map->size = size;
-	return true;
-}
-
-static bool parse_heuristic(const std::string &str, PuzzleMap *const map) {
-	(void)str; (void)map;
-	std::cout << "Call heuristic with " << str << std::endl;
-	return true;
+	for (unsigned short int i = 0; i < size; ++i) {
+		if (heuristics[i] == str) {
+			node->heuristic_type = str;
+			return true;
+		}
+	}
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'" + " is an unknown heuristic");
 }
 
 bool hasIncompatibleFlags(int flag) {
@@ -103,7 +122,7 @@ bool hasIncompatibleFlags(int flag) {
 	return false;
 }
 
-bool parse_args(int argc, char **argv, PuzzleMap *const map) {
+bool parse_args(int argc, char **argv, Node **node) {
 	std::vector<FlagExec> exec = std::vector<FlagExec>();
 	std::vector<FlagExec>::iterator it, ite;
 	int flag = 0;
@@ -121,16 +140,16 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 			if (!starts_with(str, it->start))
 				continue;
 			else if (isFlagSet(flag, it->type))
-				ft_exit(std::string("Duplicate flag ") + it->start);
+				return Errno::setError(Errno::NP_DUPLICATE_ARG, "'" + it->start + "'");
 			else {
 				flag = setFlag(flag, it->type);
 				if (hasIncompatibleFlags(flag))
-					ft_exit("Incompatible flags", true);
+					return Errno::setError(Errno::NP_INCOMPATIBLE_ARG, "", true);
 				break ;
 			}
 		}
 		if (it == ite)
-			ft_exit("Unknown flag", true);
+			return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'");
 	}
 
 	// Execute flags functions
@@ -139,16 +158,25 @@ bool parse_args(int argc, char **argv, PuzzleMap *const map) {
 
 		for (it = exec.begin(); it != ite; it++)
 			if (starts_with(str, it->start))
-				if (!it->fct(str.substr(it->start.length()), map))
+				if (!it->fct(str.substr(it->start.length()), *node))
 					return false;
 	}
 	return true;
 }
 
-bool parsing(int argc, char **argv, PuzzleMap *const map) {
-	if (!parse_args(argc, argv, map))
+bool	parsing(int argc, char **argv, Node **node) {
+	*node = new Node(MapData(), Coord(), NULL);
+
+	if (!parse_args(argc, argv, node) || !parse_map(*node)) {
+		delete *node;
+		*node = NULL;
 		return false;
-	map_data_generation(); // test
-	std::cout << parse_map(map->map) << std::endl;
+	}
+	if ((*node)->map.empty() == true) {
+		delete *node;
+		*node = NULL;
+	}
+
+	print_node_content(*node);
 	return true;
 }

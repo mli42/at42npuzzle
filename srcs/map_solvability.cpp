@@ -1,12 +1,12 @@
-#include "../includes/PuzzleMap.hpp"
+#include "../includes/Node.hpp"
 #include "../includes/utils.hpp"
+#include <cmath>
 
 int	isInf(MapLine const solution, int val1, int val2)
 {
-	int size = 5; // a enlever quand on aura une variable globale
 	int check1 = 0;
 
-	for (int i = 0; i < size * size; i++)
+	for (size_t i = 0; i < Node::double_size; i++)
 	{
 		if (solution[i] == val1)
 			check1 = 1;
@@ -34,18 +34,18 @@ MapLine map_line_generation()
 int isMapValid(MapData const map)
 {
 	MapLine sol = map_line_generation();
-	int size = 5;
+	const size_t &size = Node::size;
 	int s = 0;
 	Coord empty_tile;
 	extern std::map<int, Coord> SolutionCoords;
 
-	for (int i = 0; i < size * size - 1; i++)
+	for (size_t i = 0; i < Node::double_size - 1; i++)
 	{
 		const int x = i % size, y = i / size;
 
 		if (!map[y][x])
 			empty_tile = Coord(y, x);
-		for (int j = i + 1; j < size * size; j++)
+		for (size_t j = i + 1; j < Node::double_size; j++)
 			s += isInf(sol, map[y][x], map[j / size][j % size]);
 	}
 

@@ -1,7 +1,9 @@
 #ifndef NODE_HPP
 # define NODE_HPP
 
-# include "./utils.hpp"
+# include "./HeuristicType.hpp"
+# include "./Types.hpp"
+# include <cmath>
 
 MapLine map_line_generation();
 int		isInf(MapLine const solution, int val1, int val2);
@@ -15,6 +17,10 @@ class Node
         int heuristic;
         int g;
         Node * parent;
+
+		static std::string heuristic_type;
+		static size_t size;
+		static size_t double_size;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
 			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {
@@ -32,13 +38,15 @@ class Node
             this->empty_tile.second += dir.second;
         }
 
-        void calculate_heuristic(std::string const heuristic)
+        void calculate_heuristic(void)
         {
-            if (heuristic == "manhattan")
+            if (heuristic_type == HeuristicType::manhattan)
                 this->heuristic = this->manhattan() + this->g;
-            if (heuristic == "misplaced")
+			else if (heuristic_type == HeuristicType::euclidian)
+				this->heuristic = this->euclidian() + this->g;
+            else if (heuristic_type == HeuristicType::misplaced)
                 this->heuristic = this->manhattan() * this->misplaced() + this->g;
-			if (heuristic == "conflicts")
+			else if (heuristic_type == HeuristicType::conflicts)
 				this->heuristic = this->manhattan() * this->misplaced() + 4 * this->conflicts() + this->g;
 		}
 
@@ -48,7 +56,7 @@ class Node
             int size = this->map.size();
             extern std::map<int, Coord> SolutionCoords;
 
-            for (int i = 0; i < size * size; i++)
+            for (size_t i = 0; i < Node::double_size; i++)
             {
 				const int x = i % size, y = i / size;
 
@@ -64,7 +72,7 @@ class Node
             int size = this->map.size();
             extern std::map<int, Coord>	SolutionCoords;
 
-            for (int i = 0; i < size * size; i++)
+            for (size_t i = 0; i < Node::double_size; i++)
             {
 				const int x = i % size, y = i / size;
 
@@ -76,6 +84,25 @@ class Node
             }
             return s;
         }
+
+		int euclidian()
+		{
+            int s = 0;
+            int size = this->map.size();
+            extern std::map<int, Coord>	SolutionCoords;
+
+            for (size_t i = 0; i < Node::double_size; i++)
+            {
+				const int x = i % size, y = i / size;
+
+                if (this->map[y][x])
+                {
+                    const Coord tmp = SolutionCoords[this->map[y][x]];
+                    s += std::sqrt(std::pow(y - tmp.first, 2) + std::pow(x - tmp.second, 2));
+                }
+            }
+            return s;
+		}
 
 		int conflicts()
 		{

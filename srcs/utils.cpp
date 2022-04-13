@@ -1,18 +1,5 @@
 #include "../includes/utils.hpp"
-
-static void printUsage(void) {
-	std::cerr << "Usage:" << std::endl;
-	std::cerr << "\tn-puzzle [--file=file.txt] [--heuristic=]" << std::endl;
-	std::cerr << "\tn-puzzle [--size=NB] [--heuristic=]" << std::endl;
-}
-
-void	ft_exit(const std::string &msg, bool doPrintUsage)
-{
-	std::cerr << msg << std::endl << std::endl;
-	if (doPrintUsage)
-		printUsage();
-	exit(1);
-}
+#include <iostream>
 
 bool starts_with(const std::string &str, const std::string &target) {
 	if (str.length() < target.length()) return false;
@@ -61,15 +48,6 @@ void display_solution_coord()
 		std::cout << " " << it->second.second << ")" << std::endl;
 		it++;
 	}
-}
-
-void    print_solution(Node const * node)
-{
-    if (!node)
-        return ;
-    print_solution(node->parent);
-	// std::cin.ignore();
-    display_map_data(node->map);
 }
 
 bool	isMapRightSize(int size) {
