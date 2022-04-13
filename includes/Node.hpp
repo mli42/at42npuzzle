@@ -53,7 +53,7 @@ class Node
         int misplaced()
         {
             int s = 0;
-            int size = this->map.size();
+			const size_t &size = Node::size;
             extern std::map<int, Coord> SolutionCoords;
 
             for (size_t i = 0; i < Node::double_size; i++)
@@ -69,7 +69,7 @@ class Node
         int manhattan()
         {
             int s = 0;
-            int size = this->map.size();
+			const size_t &size = Node::size;
             extern std::map<int, Coord>	SolutionCoords;
 
             for (size_t i = 0; i < Node::double_size; i++)
@@ -88,7 +88,7 @@ class Node
 		int euclidian()
 		{
             int s = 0;
-            int size = this->map.size();
+			const size_t &size = Node::size;
             extern std::map<int, Coord>	SolutionCoords;
 
             for (size_t i = 0; i < Node::double_size; i++)
@@ -106,40 +106,40 @@ class Node
 
 		int conflicts()
 		{
-			int size = 5;
+			const size_t &size = Node::size;
 			int conflicts = 0;
 			MapLine solution = map_line_generation();
 			extern std::map<int, Coord> SolutionCoords;
 			bool in_col[size * size];
 			bool in_row[size * size];
 
-			for (int y = 0; y < size; y++)
+			for (size_t y = 0; y < size; y++)
 			{
-				for (int x = 0; x < size; x++)
+				for (size_t x = 0; x < size; x++)
 				{
-					int i = y * size + x;
+					size_t i = y * size + x;
 
 					Coord sol = SolutionCoords[this->map[y][x]];
 
-					in_col[i] = (sol.second == x);
-					in_row[i] = (sol.first == y);
+					in_col[i] = (sol.second == (int)x);
+					in_row[i] = (sol.first == (int)y);
 				}
 			}
 
-			for (int y = 0; y < size; y++)
+			for (size_t y = 0; y < size; y++)
 			{
-				for (int x = 0; x < size; x++)
+				for (size_t x = 0; x < size; x++)
 				{
-					int i = y * size + x;
+					size_t i = y * size + x;
 
 					if (!this->map[y][x])
 						continue;
 
 					if (in_col[i])
 					{
-						for (int r = y + 1; r < size; r++)
+						for (size_t r = y + 1; r < size; r++)
 						{
-							int j = r * size + x;
+							size_t j = r * size + x;
 
 							if (!this->map[r][x])
 								continue;
@@ -150,9 +150,9 @@ class Node
 
 					if (in_row[i])
 					{
-						for (int c = x + 1; c < size; c++)
+						for (size_t c = x + 1; c < size; c++)
 						{
-							int j = y * size + c;
+							size_t j = y * size + c;
 
 							if (!this->map[y][c])
 								continue;

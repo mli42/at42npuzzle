@@ -35,6 +35,13 @@ int main(int argc, char **argv) {
 		randomize(&node->map, &node->empty_tile, 220, 1);
 	}
 
+	if (!isMapValid(node->map)) {
+		delete node;
+		Errno::setError(Errno::NP_NO_ERR, "Map unsolvable!");
+		Errno::show();
+		return 0;
+	}
+
 	q.push(node);
 	closed_list.insert(node);
 	collector_stack.push(node);

@@ -38,9 +38,13 @@ class Errno {
 	};
 
 	static void show() {
-		std::cerr << Errno::meaning.at(Errno::err);
-		if (!Errno::detail.empty())
-			std::cerr << ": " << Errno::detail;
+		if (Errno::hasErr())
+			std::cerr << Errno::meaning.at(Errno::err);
+		if (!Errno::detail.empty()) {
+			if (Errno::hasErr())
+				std::cerr << ": ";
+			std::cerr << Errno::detail;
+		}
 		std::cerr << std::endl;
 		if (Errno::print_usage) printUsage();
 	};

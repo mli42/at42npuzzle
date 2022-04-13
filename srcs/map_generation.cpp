@@ -31,7 +31,6 @@ void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 
 		empty_tile->first += dir.first;
 		empty_tile->second += dir.second;
-		//display_map_data((*map)); // debug
 		indexes.clear();
 	}
 
