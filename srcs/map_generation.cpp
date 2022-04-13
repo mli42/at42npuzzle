@@ -1,4 +1,5 @@
 #include "../includes/utils.hpp"
+#include "../includes/Node.hpp"
 #include <time.h>
 #include <iostream>
 
@@ -45,11 +46,11 @@ void randomize(MapData * map, Coord * empty_tile, int moves, int solvability)
 	}
 }
 
-void make_snake(int y, int x, int *index, int size, MapData &mat)
+void make_snake(int y, int x, size_t *index, MapData &mat)
 {
 	extern std::map<int, Coord>	SolutionCoords;
 
-	const int value = *index != size * size ? (*index)++ : 0;
+	const int value = *index != Node::double_size ? (*index)++ : 0;
 
 	mat[y][x] = value;
 	SolutionCoords.insert({value, Coord(y, x)});
@@ -57,12 +58,12 @@ void make_snake(int y, int x, int *index, int size, MapData &mat)
 
 MapData map_data_generation(void)
 {
-	int size = 4; // a enlever quand on aura une variable globale
+	const size_t &size = Node::size;
 	int top = 0;
 	int bottom = size - 1;
 	int left = 0;
 	int right = size - 1;
-	int index = 1;
+	size_t index = 1;
 	MapData mat = MapData(size, MapLine(size));
 	extern std::map<int, Coord>	SolutionCoords;
 
@@ -70,25 +71,25 @@ MapData map_data_generation(void)
 		if (left > right)
 				break;
 		for (int i = left; i <= right; i++)
-			make_snake(top, i, &index, size, mat);
+			make_snake(top, i, &index, mat);
 		top++;
 
 		if (top > bottom)
 				break;
 		for (int i = top; i <= bottom; i++)
-			make_snake(i, right, &index, size, mat);
+			make_snake(i, right, &index, mat);
 		right--;
 
 		if (left > right)
 				break;
 		for (int i = right; i >= left; i--)
-			make_snake(bottom, i, &index, size, mat);
+			make_snake(bottom, i, &index, mat);
 		bottom--;
 
 		if (top > bottom)
 				break;
 		for (int i = bottom; i >= top; i--)
-			make_snake(i, left, &index, size, mat);
+			make_snake(i, left, &index, mat);
 		left++;
 	}
 

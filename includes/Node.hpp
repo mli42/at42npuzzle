@@ -48,7 +48,7 @@ class Node
             int size = this->map.size();
             extern std::map<int, Coord> SolutionCoords;
 
-            for (int i = 0; i < size * size; i++)
+            for (size_t i = 0; i < Node::double_size; i++)
             {
 				const int x = i % size, y = i / size;
 
@@ -64,7 +64,7 @@ class Node
             int size = this->map.size();
             extern std::map<int, Coord>	SolutionCoords;
 
-            for (int i = 0; i < size * size; i++)
+            for (size_t i = 0; i < Node::double_size; i++)
             {
 				const int x = i % size, y = i / size;
 

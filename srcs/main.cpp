@@ -6,7 +6,7 @@
 std::map<int, Coord> SolutionCoords;
 std::string Node::heuristic_type;
 size_t Node::size = 4;
-size_t Node::double_size = Node::size * 2;
+size_t Node::double_size = Node::size * Node::size;
 
 Coord directionsCoords[4] = {
 	{/*U*/ Coord(-1, 0)},
@@ -25,14 +25,12 @@ int main(int argc, char **argv) {
 		return (1);
 	}
 
-	return 0;
-
 	priority_queue q;
 	closed_set closed_list;
 	NodeCollector collector_stack;
-	MapData map = map_data_generation();
 
 	if (node == NULL) {
+		MapData map = map_data_generation();
 		node = new Node(map, SolutionCoords[0], NULL);
 		randomize(&node->map, &node->empty_tile, 220, 1);
 	}

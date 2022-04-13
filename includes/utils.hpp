@@ -4,7 +4,6 @@
 # include <string>
 # include "Types.hpp"
 
-void	ft_exit(const std::string &msg, bool doPrintUsage = false);
 bool	starts_with(const std::string &str, const std::string &target);
 
 void	display_map_data(MapData const map);

@@ -23,7 +23,7 @@ bool parse_map(Node *node)
 
 	for (auto it = mapCheck.begin(); it != ite; ++it)
 		if (it->second != 1)
-			return false;
+			return Errno::setError(Errno::NP_LOGIC, "File: wrong tile");
 
 	return true;
 }
@@ -42,11 +42,14 @@ std::vector<int> parse_line(char *line) {
 static bool parse_size(const std::string &str, Node *const node) {
 	const int isNum = std::regex_match(str, std::regex("\\d+"));
 
-	if (isNum == false) return false;
+	if (isNum == false)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing: not a digit");
 	const int size = atoi(str.c_str());
-	if (isMapRightSize(size) == false) return false;
+	if (isMapRightSize(size) == false)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing size: wrong value");
 
 	node->size = size;
+	node->double_size = size * size;
 	return true;
 }
 
@@ -60,38 +63,37 @@ static bool parse_file(const std::string &filename, Node *const node) {
 
 	f.open(filename);
 	if (!f.is_open())
-		ft_exit("Cannot read file " + filename);
+		return Errno::setError(Errno::NP_CANT_OPEN, "'" + filename + "'");
 	while (std::getline(f, line))
 	{
-		if (line[0] != '#')
+		if (line[0] == '#')
+			continue ;
+		token_line = strtok(&line[0], "#");
+		if (!isFlagSet(type, ARG_SIZE))
 		{
-			token_line = strtok(&line[0], "#");
-			if (!isFlagSet(type, ARG_SIZE))
+			token_token = strtok(token_line, " ");
+			if (parse_size(token_token, node) == false)
 			{
-				token_token = strtok(token_line, " ");
-				if (parse_size(token_token, node) == false)
-				{
-					f.close();
-					return false;
-				}
-				type = setFlag(type, ARG_SIZE);
+				f.close();
+				return Errno::setError(Errno::NP_LOGIC, "File corrupted (size)");
 			}
-			else
+			type = setFlag(type, ARG_SIZE);
+		}
+		else
+		{
+			tmp = parse_line(token_line);
+			if (tmp.size() != Node::size)
 			{
-				tmp = parse_line(token_line);
-				if (tmp.size() != Node::size)
-				{
-					f.close();
-					return false;
-				}
-				node->map.push_back(tmp);
-				tmp.clear();
+				f.close();
+				return Errno::setError(Errno::NP_LOGIC, "File corrupted (row length not identical)");
 			}
+			node->map.push_back(tmp);
+			tmp.clear();
 		}
 	}
 	f.close();
 	if (node->map.size() != Node::size)
-		return false;
+		return Errno::setError(Errno::NP_LOGIC, "File corrupted (col length not identical)");
 	display_map_data(node->map); // Pour debug
 	return true;
 }
@@ -109,8 +111,7 @@ static bool parse_heuristic(const std::string &str, Node *const node) {
 			return true;
 		}
 	}
-	Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'" + " is an unknown heuristic");
-	return false;
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'" + " is an unknown heuristic");
 }
 
 bool hasIncompatibleFlags(int flag) {
@@ -137,11 +138,11 @@ bool parse_args(int argc, char **argv, Node **node) {
 			if (!starts_with(str, it->start))
 				continue;
 			else if (isFlagSet(flag, it->type))
-				ft_exit(std::string("Duplicate flag ") + it->start);
+				return Errno::setError(Errno::NP_DUPLICATE_ARG, "'" + it->start + "'");
 			else {
 				flag = setFlag(flag, it->type);
 				if (hasIncompatibleFlags(flag))
-					ft_exit("Incompatible flags", true);
+					return Errno::setError(Errno::NP_INCOMPATIBLE_ARG, "", true);
 				break ;
 			}
 		}
@@ -169,6 +170,11 @@ bool	parsing(int argc, char **argv, Node **node) {
 		*node = NULL;
 		return false;
 	}
+	if ((*node)->map.empty() == true) {
+		delete *node;
+		*node = NULL;
+	}
+
 	print_node_content(*node);
 	return true;
 }
