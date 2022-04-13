@@ -8,7 +8,7 @@ bool    isMovementValid(int size, int y, int x, Coord dir)
 }
 
 
-void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack, int * O_time)
+void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack, size_t * O_time)
 {
 	extern Coord directionsCoords[];
 

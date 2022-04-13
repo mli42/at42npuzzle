@@ -26,8 +26,8 @@ typedef std::priority_queue<Node *, std::vector<Node *>, Compare> priority_queue
 typedef std::set<Node *, LessNodeMapData> closed_set;
 typedef std::stack<Node *> NodeCollector;
 
-void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack, int * O_time);
-void    print_solution(Node const *node);
+void	expand(Node *current, priority_queue *q, closed_set *closed_list, NodeCollector *collector_stack, size_t * O_time);
+void    print_solution(Node const *node, int steps, bool viz = false);
 void	print_node_content(const Node *const node);
 
 #endif

@@ -5,6 +5,7 @@
 # include "./Types.hpp"
 # include <cmath>
 
+
 MapLine map_line_generation();
 int		isInf(MapLine const solution, int val1, int val2);
 
