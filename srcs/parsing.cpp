@@ -5,6 +5,13 @@
 #include <regex>
 #include "../includes/NodeUtils.hpp" // remove at the end
 
+static const std::map<std::string, bool> bools = {
+	{"true", true},
+	{"false", false},
+	{"1", true},
+	{"0", false},
+};
+
 bool parse_map(Node *node)
 {
 	const size_t &size = Node::size;
@@ -42,8 +49,8 @@ std::vector<int> parse_line(char *line) {
 static bool parse_size(const std::string &str, Node *const node) {
 	const int isNum = std::regex_match(str, std::regex("\\d+"));
 
-	if (isNum == false)
-		return Errno::setError(Errno::NP_LOGIC, "Parsing: not a digit");
+	if (isNum == false || str.size() >= 10)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing: not an integer");
 	const int size = atoi(str.c_str());
 	if (isMapRightSize(size) == false)
 		return Errno::setError(Errno::NP_LOGIC, "Parsing size: wrong value");
@@ -116,8 +123,80 @@ static bool parse_heuristic(const std::string &str, Node *const node) {
 	return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'" + " is an unknown heuristic");
 }
 
+static bool parse_unsolvable(const std::string &str, Node *const node) {
+	std::map<std::string, bool>::const_iterator it = bools.begin(), ite = bools.end();
+
+	for (; it != ite; ++it) {
+		if (it->first == str) {
+			node->unsolvable = it->second;
+			return true;
+		}
+	}
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "wrong boolean value: '" + str + "'");
+}
+
+static bool parse_visualizer(const std::string &str, Node *const node) {
+	std::map<std::string, bool>::const_iterator it = bools.begin(), ite = bools.end();
+
+	for (; it != ite; ++it) {
+		if (it->first == str) {
+			node->visualizer = it->second;
+			return true;
+		}
+	}
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "wrong boolean value: '" + str + "'");
+}
+
+static bool parse_greedy(const std::string &str, Node *const node) {
+	std::map<std::string, bool>::const_iterator it = bools.begin(), ite = bools.end();
+
+	for (; it != ite; ++it) {
+		if (it->first == str) {
+			node->greedy = it->second;
+			return true;
+		}
+	}
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "wrong boolean value: '" + str + "'");
+}
+
+static bool parse_cost(const std::string &str, Node *const node) {
+	std::map<std::string, bool>::const_iterator it = bools.begin(), ite = bools.end();
+
+	for (; it != ite; ++it) {
+		if (it->first == str) {
+			node->cost = it->second;
+			return true;
+		}
+	}
+	return Errno::setError(Errno::NP_UNKNOWN_ARG, "wrong boolean value: '" + str + "'");
+}
+
+static bool parse_iteration(const std::string &str, Node *const node) {
+	const int isNum = std::regex_match(str, std::regex("\\d+"));
+
+	if (isNum == false || str.size() >= 10)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing: not an integer");
+	const int iter = atoi(str.c_str());
+	if (iter <= 0 || iter >= 100000)
+		return Errno::setError(Errno::NP_LOGIC, "Parsing iter: wrong value");
+
+	node->iteration = iter;
+	return true;
+}
+
+static bool parse_help(const std::string &str, Node *const node) {
+	(void)str; (void)node;
+	return Errno::setError(Errno::NP_HELP, "", true);
+}
+
 bool hasIncompatibleFlags(int flag) {
 	if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_SIZE))
+		return true;
+	else if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_UNSOLVABLE))
+		return true;
+	else if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_ITERATION))
+		return true;
+	else if (isFlagSet(flag, ARG_GREEDY) && isFlagSet(flag, ARG_COST))
 		return true;
 	return false;
 }
@@ -126,10 +205,26 @@ bool parse_args(int argc, char **argv, Node **node) {
 	std::vector<FlagExec> exec = std::vector<FlagExec>();
 	std::vector<FlagExec>::iterator it, ite;
 	int flag = 0;
+	exec.push_back({ ARG_HELP, "--help", parse_help });
 
 	exec.push_back({ ARG_PATH, "--file=", parse_file });
 	exec.push_back({ ARG_SIZE, "--size=", parse_size });
 	exec.push_back({ ARG_H, "--heuristic=", parse_heuristic });
+	exec.push_back({ ARG_UNSOLVABLE, "--unsolvable=", parse_unsolvable });
+	exec.push_back({ ARG_VISUALIZER, "--visualizer=", parse_visualizer });
+	exec.push_back({ ARG_GREEDY, "--greedy=", parse_greedy });
+	exec.push_back({ ARG_COST, "--cost=", parse_cost });
+	exec.push_back({ ARG_ITERATION, "--iteration=", parse_iteration });
+
+	exec.push_back({ ARG_PATH, "-f=", parse_file });
+	exec.push_back({ ARG_SIZE, "-s=", parse_size });
+	exec.push_back({ ARG_H, "-h=", parse_heuristic });
+	exec.push_back({ ARG_UNSOLVABLE, "-u=", parse_unsolvable });
+	exec.push_back({ ARG_VISUALIZER, "-v=", parse_visualizer });
+	exec.push_back({ ARG_GREEDY, "-g=", parse_greedy });
+	exec.push_back({ ARG_COST, "-c=", parse_cost });
+	exec.push_back({ ARG_ITERATION, "-i=", parse_iteration });
+
 	ite = exec.end();
 
 	// Check flags validity

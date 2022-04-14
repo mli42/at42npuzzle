@@ -4,9 +4,6 @@
 #include "../includes/NodeUtils.hpp"
 
 std::map<int, Coord> SolutionCoords;
-std::string Node::heuristic_type;
-size_t Node::size = 4;
-size_t Node::double_size = Node::size * Node::size;
 
 Coord directionsCoords[4] = {
 	{/*U*/ Coord(-1, 0)},
