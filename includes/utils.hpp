@@ -4,11 +4,21 @@
 # include <string>
 # include "Types.hpp"
 
+# define EOC "\033[0m"
+# define BOLD "\033[1m"
+# define RED "\033[91m"
+# define GREEN "\033[92m"
+# define YELLOW "\033[93m"
+# define DBLUE "\033[94m"
+# define PURPLE "\033[95m"
+# define CYAN "\033[96m"
+
 bool	starts_with(const std::string &str, const std::string &target);
 
-void	display_map_data(MapData const map);
-void	display_map_line(MapLine const map);
+void	display_map_data(MapData const map, bool viz = false);
+void	display_map_line(MapLine const map, bool viz = false);
 void	display_solution_coord(void);
+void    print_informations(size_t O_time, size_t O_size, int steps, double time, std::string heuristic);
 
 MapData map_data_generation(void);
 void    randomize(MapData * map, Coord * empty_tile, int moves = 1000, int solvability = 1);

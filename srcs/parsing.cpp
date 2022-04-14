@@ -3,7 +3,6 @@
 #include "../includes/parsing.hpp"
 #include "../includes/Errno.hpp"
 #include <regex>
-#include "../includes/NodeUtils.hpp" // remove at the end
 
 static const std::map<std::string, bool> bools = {
 	{"true", true},
@@ -101,7 +100,6 @@ static bool parse_file(const std::string &filename, Node *const node) {
 	f.close();
 	if (node->map.size() != Node::size)
 		return Errno::setError(Errno::NP_LOGIC, "File corrupted (col length not identical)");
-	display_map_data(node->map); // Pour debug
 	return true;
 }
 
@@ -271,7 +269,5 @@ bool	parsing(int argc, char **argv, Node **node) {
 		delete *node;
 		*node = NULL;
 	}
-
-	print_node_content(*node);
 	return true;
 }

@@ -2,6 +2,7 @@
 #include "../includes/Errno.hpp"
 #include "../includes/utils.hpp"
 #include "../includes/NodeUtils.hpp"
+#include <chrono>
 
 std::map<int, Coord> SolutionCoords;
 
@@ -11,6 +12,38 @@ Coord directionsCoords[4] = {
 	{/*R*/ Coord(0, 1)},
 	{/*L*/ Coord(0, -1)}
 };
+
+void free_collector(NodeCollector * collector_stack)
+{
+	while (!collector_stack->empty()) {
+		delete collector_stack->top();
+		collector_stack->pop();
+	}
+}
+
+void a_star(priority_queue & q, closed_set & closed_list, NodeCollector & collector_stack)
+{
+	size_t	O_size = 0;
+	size_t	O_time = 1;
+	auto t1 = std::chrono::high_resolution_clock::now();
+
+	while (1)
+	{
+		Node *top = q.top();
+		if (O_size < q.size())
+			O_size = q.size();
+		if (!(top->heuristic - top->g))
+		{
+			auto t2 = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double> ms_double = t2 - t1;
+			print_solution(top, top->g, true);
+			print_informations(O_time, O_size, top->g, ms_double.count(), Node::heuristic_type);
+			break;
+		}
+		q.pop();
+		expand(top, &q, &closed_list, &collector_stack, &O_time);
+	}
+}
 
 int main(int argc, char **argv) {
 	Node::heuristic_type = HeuristicType::misplaced;
@@ -25,12 +58,16 @@ int main(int argc, char **argv) {
 	priority_queue q;
 	closed_set closed_list;
 	NodeCollector collector_stack;
+	MapData map = map_data_generation();
 
 	if (node == NULL) {
-		MapData map = map_data_generation();
 		node = new Node(map, SolutionCoords[0], NULL);
-		randomize(&node->map, &node->empty_tile, 220, 1);
+		randomize(&node->map, &node->empty_tile, 100, 1);
 	}
+
+	// Si le flag viz est passé
+		display_map_data(node->map, true);
+		std::cout << "Searching..." << std::endl;
 
 	if (!isMapValid(node->map)) {
 		delete node;
@@ -39,32 +76,11 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
+	node->calculate_heuristic();
 	q.push(node);
 	closed_list.insert(node);
 	collector_stack.push(node);
-
-	size_t max = 0;
-	while (1)
-	{
-		Node *top = q.top();
-		if (max < q.size())
-			max = q.size();
-		if (!(top->heuristic - top->g))
-		{
-			std::cout << "Solution : " << std::endl;
-			print_solution(top);
-			std::cout << "G: " << top->g << std::endl;
-			std::cout << "Size complexity : " << max << std::endl;
-			break;
-		}
-		q.pop();
-		expand(top, &q, &closed_list, &collector_stack);
-	}
-
-	while (!collector_stack.empty()) {
-		delete collector_stack.top();
-		collector_stack.pop();
-	}
-
+	a_star(q, closed_list, collector_stack);
+	free_collector(&collector_stack);
 	return (0);
 }
