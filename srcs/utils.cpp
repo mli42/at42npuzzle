@@ -51,6 +51,6 @@ void display_solution_coord()
 }
 
 bool	isMapRightSize(int size) {
-	if (size < 3 || size > 17) return false;
+	if (size < 3 || size > 9) return false;
 	return true;
 }

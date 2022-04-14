@@ -5,9 +5,16 @@
 # include <map>
 
 static void printUsage(void) {
-	std::cerr << "Usage:" << std::endl;
-	std::cerr << "\tn-puzzle [--file=file.txt] [--heuristic=]" << std::endl;
-	std::cerr << "\tn-puzzle [--size=NB] [--heuristic=]" << std::endl;
+	std::cerr << "Usage n-puzzle:" << std::endl << \
+		"\t[--help]" << std::endl << \
+		"\t[--file/-f=] (incompatible with -s/-u/-i)" << std::endl << \
+		"\t[--size/-s=] (3 < x < 9) (incompatible with -f)" << std::endl << \
+		"\t[--heuristic/-h=] {manhattan, misplaced, conflicts, euclidian}" << std::endl << \
+		"\t[--unsolvable/-u=] (incompatible with -f)" << std::endl << \
+		"\t[--visualizer/-v=]" << std::endl << \
+		"\t[--greedy/-g=] (incompatible with -c)" << std::endl << \
+		"\t[--cost/-c=] (incompatible with -g)" << std::endl << \
+		"\t[--iteration/-i=] (0 < x < 100000) (incompatible with -f)" << std::endl;
 }
 
 class Errno {
