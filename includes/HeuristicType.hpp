@@ -8,6 +8,7 @@ struct HeuristicType {
 	static const std::string manhattan;
 	static const std::string conflicts;
 	static const std::string euclidian;
+	static const std::string custom;
 };
 
 #endif

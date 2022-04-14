@@ -57,6 +57,8 @@ class Node
 					this->heuristic = this->misplaced() + this->get_g();
 				else if (heuristic_type == HeuristicType::conflicts)
 					this->heuristic = this->manhattan() + 2 * this->conflicts() + this->get_g();
+				else if (heuristic_type == HeuristicType::custom)
+					this->heuristic = this->manhattan() * this->misplaced() + 4 * this->conflicts() + this->get_g();
 			}
 		}
 

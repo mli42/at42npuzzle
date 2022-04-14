@@ -109,6 +109,7 @@ static bool parse_heuristic(const std::string &str, Node *const node) {
 		HeuristicType::misplaced,
 		HeuristicType::conflicts,
 		HeuristicType::euclidian,
+		HeuristicType::custom,
 	};
 	const size_t size = sizeof(heuristics) / sizeof(*heuristics);
 
@@ -242,7 +243,7 @@ bool parse_args(int argc, char **argv, Node **node) {
 			}
 		}
 		if (it == ite)
-			return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'");
+			return Errno::setError(Errno::NP_UNKNOWN_ARG, "'" + str + "'", true);
 	}
 
 	// Execute flags functions

@@ -9,11 +9,11 @@ static void printUsage(void) {
 		"\t[--help]" << std::endl << \
 		"\t[--file/-f=] (incompatible with -s/-u/-i)" << std::endl << \
 		"\t[--size/-s=] (3 < x < 9) (incompatible with -f)" << std::endl << \
-		"\t[--heuristic/-h=] {manhattan, misplaced, conflicts, euclidian}" << std::endl << \
-		"\t[--unsolvable/-u=] (incompatible with -f)" << std::endl << \
-		"\t[--visualizer/-v=]" << std::endl << \
-		"\t[--greedy/-g=] (incompatible with -c)" << std::endl << \
-		"\t[--cost/-c=] (incompatible with -g)" << std::endl << \
+		"\t[--heuristic/-h=] {manhattan, misplaced, conflicts, euclidian, custom}" << std::endl << \
+		"\t[--unsolvable/-u=] (bool) (incompatible with -f)" << std::endl << \
+		"\t[--visualizer/-v=] (bool)" << std::endl << \
+		"\t[--greedy/-g=] (bool) (incompatible with -c)" << std::endl << \
+		"\t[--cost/-c=] (bool) (incompatible with -g)" << std::endl << \
 		"\t[--iteration/-i=] (0 < x < 100000) (incompatible with -f)" << std::endl;
 }
 
