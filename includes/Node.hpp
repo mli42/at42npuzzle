@@ -21,6 +21,11 @@ class Node
 		static std::string heuristic_type;
 		static size_t size;
 		static size_t double_size;
+		static bool unsolvable;
+		static bool visualizer;
+		static bool greedy;
+		static bool cost;
+		static int iteration;
 
 		Node(MapData const map, Coord const empty_tile, Node * parent = NULL) :
 			map(map), empty_tile(empty_tile), heuristic(-1), g(parent ? parent->g + 1 : 0), parent(parent) {

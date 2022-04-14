@@ -6,7 +6,7 @@
 #    By: mli <mli@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/04 13:40:21 by mli               #+#    #+#              #
-#    Updated: 2022/04/12 16:00:00 by mli              ###   ########.fr        #
+#    Updated: 2022/04/14 14:00:26 by mli              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ ifeq ($(f), debug)
 endif
 
 FILES = main.cpp parsing.cpp utils.cpp map_generation.cpp map_solvability.cpp movements.cpp \
-	Errno.cpp HeuristicType.cpp NodeUtils.cpp
+	Errno.cpp HeuristicType.cpp NodeUtils.cpp Node.cpp
 SRCS = ${addprefix ${SRCS_PATH}, ${FILES}}
 
 SRCS_FILES = ${addprefix , ${SRCS}}
