@@ -192,6 +192,12 @@ static bool parse_help(const std::string &str, Node *const node) {
 bool hasIncompatibleFlags(int flag) {
 	if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_SIZE))
 		return true;
+	else if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_UNSOLVABLE))
+		return true;
+	else if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_ITERATION))
+		return true;
+	else if (isFlagSet(flag, ARG_GREEDY) && isFlagSet(flag, ARG_COST))
+		return true;
 	return false;
 }
 
