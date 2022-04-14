@@ -16,41 +16,16 @@ Coord directionsCoords[4] = {
 	{/*L*/ Coord(0, -1)}
 };
 
-int main(int argc, char **argv) {
-	Node::heuristic_type = HeuristicType::misplaced;
-	Node *node = NULL;
-
-	parsing(argc, argv, &node);
-	if (Errno::hasErr()) {
-		Errno::show();
-		return (1);
+void free_collector(NodeCollector * collector_stack)
+{
+	while (!collector_stack->empty()) {
+		delete collector_stack->top();
+		collector_stack->pop();
 	}
+}
 
-	priority_queue q;
-	closed_set closed_list;
-	NodeCollector collector_stack;
-	MapData map = map_data_generation();
-
-	if (node == NULL) {
-		node = new Node(map, SolutionCoords[0], NULL);
-		randomize(&node->map, &node->empty_tile, 100, 1);
-	}
-
-	display_map_data(node->map, true);
-	std::cout << "Searching..." << std::endl;
-
-	if (!isMapValid(node->map)) {
-		delete node;
-		Errno::setError(Errno::NP_NO_ERR, "Map unsolvable!");
-		Errno::show();
-		return 0;
-	}
-
-	node->calculate_heuristic();
-	q.push(node);
-	closed_list.insert(node);
-	collector_stack.push(node);
-
+void a_star(priority_queue & q, closed_set & closed_list, NodeCollector & collector_stack)
+{
 	size_t	O_size = 0;
 	size_t	O_time = 1;
 	auto t1 = std::chrono::high_resolution_clock::now();
@@ -71,11 +46,44 @@ int main(int argc, char **argv) {
 		q.pop();
 		expand(top, &q, &closed_list, &collector_stack, &O_time);
 	}
+}
 
-	while (!collector_stack.empty()) {
-		delete collector_stack.top();
-		collector_stack.pop();
+int main(int argc, char **argv) {
+	Node::heuristic_type = HeuristicType::misplaced;
+	Node *node = NULL;
+
+	parsing(argc, argv, &node);
+	if (Errno::hasErr()) {
+		Errno::show();
+		return (1);
 	}
 
+	priority_queue q;
+	closed_set closed_list;
+	NodeCollector collector_stack;
+	MapData map = map_data_generation();
+
+	if (node == NULL) {
+		node = new Node(map, SolutionCoords[0], NULL);
+		randomize(&node->map, &node->empty_tile, 100, 1);
+	}
+
+	// Si le flag viz est passé
+		display_map_data(node->map, true);
+		std::cout << "Searching..." << std::endl;
+
+	if (!isMapValid(node->map)) {
+		delete node;
+		Errno::setError(Errno::NP_NO_ERR, "Map unsolvable!");
+		Errno::show();
+		return 0;
+	}
+
+	node->calculate_heuristic();
+	q.push(node);
+	closed_list.insert(node);
+	collector_stack.push(node);
+	a_star(q, closed_list, collector_stack);
+	free_collector(&collector_stack);
 	return (0);
 }
