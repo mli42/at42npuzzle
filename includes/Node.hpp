@@ -45,14 +45,19 @@ class Node
 
         void calculate_heuristic(void)
         {
-            if (heuristic_type == HeuristicType::manhattan)
-                this->heuristic = this->manhattan() + this->g;
-			else if (heuristic_type == HeuristicType::euclidian)
-				this->heuristic = this->euclidian() + this->g;
-            else if (heuristic_type == HeuristicType::misplaced)
-                this->heuristic = this->manhattan() * this->misplaced() + this->g;
-			else if (heuristic_type == HeuristicType::conflicts)
-				this->heuristic = this->manhattan() * this->misplaced() + 4 * this->conflicts() + this->g;
+			if (Node::cost)
+				this->heuristic = (this->manhattan() ? 1 : 0);
+			else
+			{
+				if (heuristic_type == HeuristicType::manhattan)
+					this->heuristic = this->manhattan() + this->get_g();
+				else if (heuristic_type == HeuristicType::euclidian)
+					this->heuristic = this->euclidian() + this->get_g();
+				else if (heuristic_type == HeuristicType::misplaced)
+					this->heuristic = this->misplaced() + this->get_g();
+				else if (heuristic_type == HeuristicType::conflicts)
+					this->heuristic = this->manhattan() + 2 * this->conflicts() + this->get_g();
+			}
 		}
 
         int misplaced()
@@ -168,6 +173,13 @@ class Node
 				}
 			}
 			return conflicts;
+		}
+
+		int get_g() const
+		{
+			if (Node::greedy || Node::cost)
+				return 0;
+			return this->g;
 		}
 };
 

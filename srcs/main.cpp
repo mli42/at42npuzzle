@@ -32,11 +32,11 @@ void a_star(priority_queue & q, closed_set & closed_list, NodeCollector & collec
 		Node *top = q.top();
 		if (O_size < q.size())
 			O_size = q.size();
-		if (!(top->heuristic - top->g))
+		if (!(top->heuristic - top->get_g()))
 		{
 			auto t2 = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> ms_double = t2 - t1;
-			print_solution(top, top->g, true);
+			print_solution(top, top->g);
 			print_informations(O_time, O_size, top->g, ms_double.count(), Node::heuristic_type);
 			break;
 		}
@@ -62,12 +62,14 @@ int main(int argc, char **argv) {
 
 	if (node == NULL) {
 		node = new Node(map, SolutionCoords[0], NULL);
-		randomize(&node->map, &node->empty_tile, 100, 1);
+		randomize(&node->map, &node->empty_tile, Node::iteration, !Node::unsolvable);
 	}
 
-	// Si le flag viz est passé
-		display_map_data(node->map, true);
+	if (Node::visualizer)
+	{
+		display_map_data(node->map);
 		std::cout << "Searching..." << std::endl;
+	}
 
 	if (!isMapValid(node->map)) {
 		delete node;
