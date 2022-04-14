@@ -15,8 +15,6 @@
 
 bool	starts_with(const std::string &str, const std::string &target);
 
-void	display_map_data(MapData const map, bool viz = false);
-void	display_map_line(MapLine const map, bool viz = false);
 void	display_solution_coord(void);
 void    print_informations(size_t O_time, size_t O_size, int steps, double time, std::string heuristic);
 
