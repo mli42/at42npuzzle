@@ -16,6 +16,7 @@ enum e_flag {
 	ARG_GREEDY = 1 << 5,
 	ARG_COST = 1 << 6,
 	ARG_ITERATION = 1 << 7,
+	ARG_HELP = 1 << 8,
 };
 
 struct FlagExec{

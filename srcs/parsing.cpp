@@ -184,6 +184,11 @@ static bool parse_iteration(const std::string &str, Node *const node) {
 	return true;
 }
 
+static bool parse_help(const std::string &str, Node *const node) {
+	(void)str; (void)node;
+	return Errno::setError(Errno::NP_HELP, "", true);
+}
+
 bool hasIncompatibleFlags(int flag) {
 	if (isFlagSet(flag, ARG_PATH) && isFlagSet(flag, ARG_SIZE))
 		return true;
@@ -194,6 +199,7 @@ bool parse_args(int argc, char **argv, Node **node) {
 	std::vector<FlagExec> exec = std::vector<FlagExec>();
 	std::vector<FlagExec>::iterator it, ite;
 	int flag = 0;
+	exec.push_back({ ARG_HELP, "--help", parse_help });
 
 	exec.push_back({ ARG_PATH, "--file=", parse_file });
 	exec.push_back({ ARG_SIZE, "--size=", parse_size });

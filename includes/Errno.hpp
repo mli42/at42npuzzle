@@ -14,6 +14,7 @@ class Errno {
 	public:
 	enum nperrno {
 		NP_NO_ERR = 0,
+		NP_HELP,
 		NP_LOGIC,
 		NP_CANT_OPEN,
 		NP_DUPLICATE_ARG,
