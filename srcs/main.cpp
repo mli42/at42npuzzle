@@ -46,7 +46,7 @@ void a_star(priority_queue & q, closed_set & closed_list, NodeCollector & collec
 }
 
 int main(int argc, char **argv) {
-	Node::heuristic_type = HeuristicType::misplaced;
+	Node::heuristic_type = HeuristicType::conflicts;
 	Node *node = NULL;
 
 	parsing(argc, argv, &node);

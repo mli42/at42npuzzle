@@ -24,8 +24,11 @@ bool parse_map(Node *node)
 		mapCheck.insert({i, 0});
 
 	for (size_t i = 0; i < size; i++)
-		for (size_t j = 0; j < size; j++)
+		for (size_t j = 0; j < size; j++) {
+			if (map[i][j] == 0)
+				node->empty_tile = Coord(i, j);
 			mapCheck[map[i][j]] += 1;
+		}
 
 	for (auto it = mapCheck.begin(); it != ite; ++it)
 		if (it->second != 1)
