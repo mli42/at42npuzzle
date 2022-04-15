@@ -16,15 +16,15 @@
 bool	starts_with(const std::string &str, const std::string &target);
 
 void	display_solution_coord(void);
-void    print_informations(size_t O_time, size_t O_size, int steps, double time, std::string heuristic);
+void	print_informations(size_t O_time, size_t O_size, int steps, double time, std::string heuristic);
 
 MapData map_data_generation(void);
-void    randomize(MapData * map, Coord * empty_tile, int moves = 1000, int solvability = 1);
+void	randomize(MapData * map, Coord * empty_tile, int moves = 1000, int solvability = 1);
 
 bool	isFlagSet(const int num, const int bit);
 int		setFlag(const int num, const int bit);
 
 bool	isMapRightSize(int size);
-bool    isMovementValid(int size, int y, int x, Coord dir);
+bool	isMovementValid(int size, int y, int x, Coord dir);
 
 #endif // UTILS_HPP
